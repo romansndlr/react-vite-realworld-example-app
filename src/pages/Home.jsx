@@ -19,14 +19,6 @@ function Home() {
                 <li className="nav-item">
                   <button
                     type="button"
-                    className="nav-link" // Add active when feed
-                  >
-                    Your Feed
-                  </button>
-                </li>
-                <li className="nav-item">
-                  <button
-                    type="button"
                     className="nav-link" // Add active if not feed and not tag
                   >
                     Global Feed
