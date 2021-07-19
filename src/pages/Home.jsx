@@ -1,8 +1,48 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker'
 import React from 'react'
-
+import axios from 'axios'
+import classNames from 'classnames'
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+const DEFAULT_LIMIT = 10
 function Home() {
+  const [offset, setOffset] = React.useState(0)
+  const [activeTag, setActiveTag] = React.useState(null)
+  const tagsQuery = useQuery("get-tags", ()=> axios.get("https://conduit.productionready.io/api/tags"),
+  {
+
+    placeholderData: {
+      data: {
+        tags: []
+      }
+    },
+
+  }
+  )
+
+  const articlesQuery = useQuery(['get-articles', { offset, activeTag }], () => axios.get('https://conduit.productionready.io/api/articles', {
+    params: {
+      limit: DEFAULT_LIMIT,
+      offset,
+      tag: activeTag
+    }
+  }),
+  {
+
+    placeholderData: {
+      data: {
+        articles: [],
+        articlesCount: 0
+      }
+    },
+
+  })
+  const articles = articlesQuery?.data?.data?.articles
+  const articlesCount = articlesQuery?.data?.data?.articlesCount
+  const tags = tagsQuery?.data?.data?.tags
+
+
+  
   return (
     <div className="home-page">
       <div className="banner">
@@ -19,73 +59,79 @@ function Home() {
                 <li className="nav-item">
                   <button
                     type="button"
-                    className="nav-link" // Add active if not feed and not tag
+                    onClick={()=> setActiveTag(null)}
+                    className={classNames("nav-link", {active: !activeTag})}
                   >
                     Global Feed
                   </button>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link active"># {faker.lorem.word()}</a>
+                 {activeTag && <a className="nav-link active"># {activeTag}</a>}
                 </li>
               </ul>
             </div>
+            {articlesQuery.isFetching && <div className="article-preview">Loading articles..</div>}
+            {(articles?.length === 0 && articlesQuery.isFetched) && <div className="article-preview">No articles to show... Wanna be the first to post?</div>}
+            {articles?.map((article) => { return (
+              
             <div className="article-preview">
+              
               <div className="article-meta">
                 <a>
-                  <img src={faker.image.avatar()} />
+                  <img src={article?.author?.image} />
                 </a>
                 <div className="info">
-                  <a className="author">{faker.internet.userName()}</a>
-                  <span className="date">{new Date(faker.date.past()).toDateString()}</span>
+                  <a className="author">{article?.author?.username}</a>
+                  <span className="date">{new Date(article?.createdAt).toDateString()}</span>
                 </div>
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-primary" // Change to btn-primary if favorited
+                  className={classNames("btn btn-sm", {"btn-outline-primary": !article.favorited })} 
+                  
                   disabled={false}
                 >
                   <i className="ion-heart" />
-                  &nbsp; {faker.datatype.number()}
+                  &nbsp; {article?.favoritesCount}
                 </button>
               </div>
               <a className="preview-link">
-                <h1>{faker.lorem.sentence()}</h1>
-                <p>{faker.lorem.paragraph()}</p>
+                <h1>{article?.title}</h1>
+                <p>{article?.description}</p>
                 <span>Read more...</span>
                 <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">{faker.lorem.word()}</li>
+                  {article?.tagList?.map((tag) => { 
+                    return <li className="tag-default tag-pill tag-outline">{tag}</li>})}
                 </ul>
               </a>
             </div>
+            )})}
             <nav>
               <ul className="pagination">
-                <li className="page-item">
-                  <button type="button" className="page-link">
-                    1
+                {Array.from({ length: articlesCount / DEFAULT_LIMIT}, (_, index) => { return ( 
+                <li className={classNames("page-item", {active: index === offset / DEFAULT_LIMIT})}>
+                  <button onClick={()=> setOffset(index * DEFAULT_LIMIT)} type="button" className="page-link">
+                    {index+1}
                   </button>
                 </li>
-                <li className="page-item">
-                  <button type="button" className="page-link">
-                    2
-                  </button>
-                </li>
-                <li className="page-item active">
-                  <button type="button" className="page-link">
-                    3
-                  </button>
-                </li>
+                ) })}
+               
               </ul>
             </nav>
           </div>
           <div className="col-md-3">
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
+            <div className="sidebar">
+              <p>Popular Tags</p>
+              <div className="tag-list">
+      
+            {tags?.map((tag) => { return (
+              <a onClick={()=> setActiveTag(tag)} href="#" className="tag-pill tag-default">
+              {tag}
             </a>
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
-            </a>
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
-            </a>
+            )})}
+            </div>
+            {tagsQuery.isFetching && <div>Loading Tags...</div>}
+            {(tags?.length === 0 && tagsQuery.isFetched) && <div>No tags are here... yet.</div>}
+            </div>
           </div>
         </div>
       </div>
