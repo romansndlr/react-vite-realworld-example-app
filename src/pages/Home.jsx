@@ -1,8 +1,19 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker'
 import React from 'react'
+import {useQueryClient, useQuery} from 'react-query'
+import axios from 'axios'
 
 function Home() {
+  const queryClient = useQueryClient()
+  const articlesQuery  = useQuery('get-articles-list', ()=>axios.get("https://conduit.productionready.io/api/articles"), {placeholderData:{
+    data:{
+      articles:[],
+      articlesCount:0
+    }
+    }})
+  const articles = articlesQuery?.data?.data?.articles
+
   return (
     <div className="home-page">
       <div className="banner">
@@ -29,33 +40,38 @@ function Home() {
                 </li>
               </ul>
             </div>
-            <div className="article-preview">
-              <div className="article-meta">
-                <a>
-                  <img src={faker.image.avatar()} />
-                </a>
-                <div className="info">
-                  <a className="author">{faker.internet.userName()}</a>
-                  <span className="date">{new Date(faker.date.past()).toDateString()}</span>
+            {articles.map((article)=>{
+              return <React.Fragment>
+                <div className="article-preview">
+                  <div className="article-meta">
+                    <a>
+                      <img src={article.author.image} />
+                    </a>
+                    <div className="info">
+                      <a className="author">{article.author.username}</a>
+                      <span className="date">{new Date(article.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-primary" // Change to btn-primary if favorited
+                      disabled={false}
+                    >
+                      <i className="ion-heart" />
+                      &nbsp; {article.favoritesCount}
+                    </button>
+                  </div>
+                  <a className="preview-link">
+                    <h1>{article.title}</h1>
+                    <p>{article.body}</p>
+                    <span>Read more...</span>
+                    <ul className="tag-list">
+                      <li className="tag-default tag-pill tag-outline">{faker.lorem.word()}</li>
+                    </ul>
+                  </a>
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-primary" // Change to btn-primary if favorited
-                  disabled={false}
-                >
-                  <i className="ion-heart" />
-                  &nbsp; {faker.datatype.number()}
-                </button>
-              </div>
-              <a className="preview-link">
-                <h1>{faker.lorem.sentence()}</h1>
-                <p>{faker.lorem.paragraph()}</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">{faker.lorem.word()}</li>
-                </ul>
-              </a>
-            </div>
+              </React.Fragment>
+            })}
+
             <nav>
               <ul className="pagination">
                 <li className="page-item">
