@@ -4,6 +4,7 @@ import React from 'react'
 import { useState } from 'react'
 import { useQueryClient, useQuery } from 'react-query'
 import axios from 'axios'
+import classNames from 'classnames'
 
 function Home() {
   const PAGE_LIMIT = 5
@@ -60,7 +61,7 @@ function Home() {
                   <button
                     onClick={()=>{setSelectedTag(null)}}
                     type='button'
-                    className='nav-link' // Add active if not feed and not tag
+                    className={classNames('nav-link',{'active':!selectedTag})} // Add active if not feed and not tag
                   >
                     Global Feed
                   </button>
@@ -83,7 +84,7 @@ function Home() {
                     </div>
                     <button
                       type='button'
-                      className='btn btn-sm btn-outline-primary' // Change to btn-primary if favorited
+                      className={classNames('btn btn-sm ',{'btn-outline-primary':!article.favorited, 'btn-primary':article.favorited})} // Change to btn-primary if favorited
                       disabled={false}
                     >
                       <i className='ion-heart' />
