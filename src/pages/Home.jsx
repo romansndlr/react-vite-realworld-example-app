@@ -11,6 +11,7 @@ function Home() {
   let articles= data?.data.articles
 
   return (
+    
     <div className="home-page">
       <div className="banner">
         <div className="container">
