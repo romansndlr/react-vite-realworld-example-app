@@ -62,7 +62,7 @@ function App() {
           </span>
         </div>
       </footer>
-        <ReactQueryDevtools initialIsOpen={true}/>
+        <ReactQueryDevtools containerElement="div" initialIsOpen={false}/>
       </QueryClientProvider>
     </Router>
   )

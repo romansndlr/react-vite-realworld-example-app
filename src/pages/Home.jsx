@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import faker from 'faker'
 import React from 'react'
-import { useState } from 'react'
+import { useState } from "react"
 import { useQueryClient, useQuery } from 'react-query'
 import axios from 'axios'
 import classNames from 'classnames'
@@ -11,18 +10,15 @@ function Home() {
   const [offset, setOffset] = useState(0)
   const [selectedTag, setSelectedTag] = useState(null)
   const queryClient = useQueryClient()
-  let params = {
+  const params = {
     offset: offset * PAGE_LIMIT,
-    limit: PAGE_LIMIT
+    limit: PAGE_LIMIT,
+    tag: selectedTag
   }
 
-  if (selectedTag) {
-    params = Object.assign(params, { tag: selectedTag })
-  }
-  if (selectedTag) {
-    Object.assign(params, {})
-  }
-  const articlesQuery = useQuery(`get-articles-list-${offset}-${selectedTag}`, () => axios.get('https://conduit.productionready.io/api/articles', {
+
+
+  const articlesQuery = useQuery(['get-articles-list',{offset, selectedTag}], () => axios.get('https://conduit.productionready.io/api/articles', {
     params
   }), {
     placeholderData: {
@@ -59,7 +55,7 @@ function Home() {
               <ul className='nav nav-pills outline-active'>
                 <li className='nav-item'>
                   <button
-                    onClick={()=>{setSelectedTag(null)}}
+                    onClick={()=>setSelectedTag(null)}
                     type='button'
                     className={classNames('nav-link',{'active':!selectedTag})} // Add active if not feed and not tag
                   >
@@ -72,8 +68,7 @@ function Home() {
               </ul>
             </div>
             {articles.map((article, idx) => {
-              return <React.Fragment key={idx}>
-                <div className='article-preview'>
+              return  <div className='article-preview'  key={idx}>
                   <div className='article-meta'>
                     <a>
                       <img src={article.author.image} />
@@ -103,7 +98,6 @@ function Home() {
                     </ul>
                   </a>
                 </div>
-              </React.Fragment>
             })}
 
             <nav>
@@ -126,13 +120,9 @@ function Home() {
           </div>
           <div className='col-md-3'>
             {tags.map((tag, idx) => {
-              return <React.Fragment key={idx}>
-                <a href='#' onClick={() => {
-                  setSelectedTag(tag)
-                }} className='tag-pill tag-default'>
+              return  <a href='#' key={idx} onClick={() => setSelectedTag(tag)} className='tag-pill tag-default'>
                   {tag}
                 </a>
-              </React.Fragment>
             })}
 
 
