@@ -1,12 +1,18 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Article, Home } from './pages'
+import {QueryClient, QueryClientProvider} from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 import './App.css'
 
+const queryClient = new QueryClient()
+
 function App() {
   return (
+
     <Router>
+      <QueryClientProvider client={queryClient}>
       <header>
         <nav className="navbar navbar-light">
           <div className="container">
@@ -56,6 +62,8 @@ function App() {
           </span>
         </div>
       </footer>
+        <ReactQueryDevtools initialIsOpen={true}/>
+      </QueryClientProvider>
     </Router>
   )
 }
