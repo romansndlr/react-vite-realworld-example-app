@@ -1,8 +1,15 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import axios from 'axios'
 import faker from 'faker'
 import React from 'react'
+import { useQuery } from 'react-query'
 
 function Home() {
+  
+  const { data }= useQuery ('get-articles', ()=> axios.get('http://conduit.productionready.io/api/articles'))
+  console.log(data)
+  let articles= data?.data.articles
+
   return (
     <div className="home-page">
       <div className="banner">
@@ -29,33 +36,35 @@ function Home() {
                 </li>
               </ul>
             </div>
-            <div className="article-preview">
-              <div className="article-meta">
-                <a>
-                  <img src={faker.image.avatar()} />
-                </a>
-                <div className="info">
-                  <a className="author">{faker.internet.userName()}</a>
-                  <span className="date">{new Date(faker.date.past()).toDateString()}</span>
+            {articles?.map((article,index)=>(
+               <div className="article-preview">
+                <div className="article-meta">
+                  <a>
+                    <img src={article.author.image} />
+                  </a>
+                  <div className="info">
+                    <a className="author">{article.author.username}</a>
+                    <span className="date">{new Date(article.createdAt).toDateString()}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-primary" // Change to btn-primary if favorited
+                    disabled={false}
+                  >
+                    <i className="ion-heart" />
+                    &nbsp; {article.favoritesCount}
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-primary" // Change to btn-primary if favorited
-                  disabled={false}
-                >
-                  <i className="ion-heart" />
-                  &nbsp; {faker.datatype.number()}
-                </button>
-              </div>
-              <a className="preview-link">
-                <h1>{faker.lorem.sentence()}</h1>
-                <p>{faker.lorem.paragraph()}</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">{faker.lorem.word()}</li>
-                </ul>
-              </a>
-            </div>
+                <a className="preview-link">
+                  <h1>{article.title}</h1>
+                  <p>{article.description}</p>
+                  <span>Read more...</span>
+                  {article.tagList.map((tag,index)=> (
+                    <ul className="tag-list">
+                      <li className="tag-default tag-pill tag-outline">{tag}</li>
+                    </ul>))}
+                </a>
+              </div>))}
             <nav>
               <ul className="pagination">
                 <li className="page-item">
