@@ -12,7 +12,16 @@ function Home() {
       articlesCount:0
     }
     }})
+
+  const tagsQuery = useQuery('get-tags-list', ()=>axios.get("https://conduit.productionready.io/api/tags"), {
+    placeholderData:{
+      data:{
+        tags:[]
+      }
+    }
+  })
   const articles = articlesQuery?.data?.data?.articles
+  const tags = tagsQuery?.data?.data?.tags
 
   return (
     <div className="home-page">
@@ -40,8 +49,8 @@ function Home() {
                 </li>
               </ul>
             </div>
-            {articles.map((article)=>{
-              return <React.Fragment>
+            {articles.map((article, idx)=>{
+              return <React.Fragment key={idx}>
                 <div className="article-preview">
                   <div className="article-meta">
                     <a>
@@ -93,15 +102,15 @@ function Home() {
             </nav>
           </div>
           <div className="col-md-3">
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
-            </a>
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
-            </a>
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
-            </a>
+            {tags.map((tag, idx)=>{
+              return <React.Fragment key={idx}>
+                <a href="#" className="tag-pill tag-default" >
+                  {tag}
+                </a>
+              </React.Fragment>
+            })}
+
+
           </div>
         </div>
       </div>
