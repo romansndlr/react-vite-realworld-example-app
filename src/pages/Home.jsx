@@ -98,7 +98,7 @@ function Home() {
                   <span>Read more...</span>
                   <ul className="tag-list">
                     {article?.tagList.map((tag) => {
-                      ;<li className="tag-default tag-pill tag-outline">{tag}</li>
+                      return <li className="tag-default tag-pill tag-outline">{tag}</li>
                     })}
                   </ul>
                 </a>
