@@ -2,16 +2,34 @@
 import axios from 'axios'
 import faker from 'faker'
 import React from 'react'
+import { useState } from 'react'
 import { useQuery } from 'react-query'
+import classNames from 'classnames'
 
 function Home() {
   
-  const { data }= useQuery ('get-articles', ()=> axios.get('http://conduit.productionready.io/api/articles'))
-  console.log(data)
-  let articles= data?.data.articles
+  const [headTag, setHeadTag] = useState(null)
+  const [page, setPage] = useState(0)
+  const LIMIT_SIZE= 20;
+  const offset= page* LIMIT_SIZE;
 
+  const articleRes= useQuery (['get-articles', {tag: headTag, offset:offset}], 
+  ()=> axios.get('http://conduit.productionready.io/api/articles',
+  {params: {tag:headTag, offset:offset}}
+    ));
+  
+  const tags  = useQuery ('get-tags', ()=> axios.get('http://conduit.productionready.io/api/tags'),
+   { placeholderData : { data:{ tags : [] }}});
+  
+  const articles = articleRes?.data?.data.articles;
+  const articleCount = articleRes?.data?.data?.articlesCount
+  const pages = articleCount/ LIMIT_SIZE;
+
+  if (articleRes.isLoading) return 'Loading...'
+  if (articleRes.error) return 'An error has occurred: ' + articleRes.error?.message
+  
   return (
-    
+
     <div className="home-page">
       <div className="banner">
         <div className="container">
@@ -27,17 +45,20 @@ function Home() {
                 <li className="nav-item">
                   <button
                     type="button"
-                    className="nav-link" // Add active if not feed and not tag
+                    onClick= {()=> setHeadTag(null)}
+                    className={classNames("nav-link", {"active":!headTag})} // Add active if not feed and not tag
                   >
                     Global Feed
                   </button>
                 </li>
-                <li className="nav-item">
-                  <a className="nav-link active"># {faker.lorem.word()}</a>
-                </li>
+                {headTag && 
+                  <li className="nav-item">
+                    <a className={classNames("nav-link",{ "active":headTag })}> # {headTag}</a>
+                  </li> }
+                
               </ul>
             </div>
-            {articles?.map((article,index)=>(
+            {articles?.map((article,index)=>( 
                <div className="article-preview">
                 <div className="article-meta">
                   <a>
@@ -49,7 +70,7 @@ function Home() {
                   </div>
                   <button
                     type="button"
-                    className="btn btn-sm btn-outline-primary" // Change to btn-primary if favorited
+                    className={article.favorited? "btn-primary" : "btn btn-sm btn-outline-primary"} // Change to btn-primary if favorited
                     disabled={false}
                   >
                     <i className="ion-heart" />
@@ -67,35 +88,27 @@ function Home() {
                 </a>
               </div>))}
             <nav>
-              <ul className="pagination">
-                <li className="page-item">
-                  <button type="button" className="page-link">
-                    1
-                  </button>
-                </li>
-                <li className="page-item">
-                  <button type="button" className="page-link">
-                    2
-                  </button>
-                </li>
-                <li className="page-item active">
-                  <button type="button" className="page-link">
-                    3
-                  </button>
-                </li>
-              </ul>
+            <ul className="pagination">
+            { Array(pages).fill(0).map((_, i) => i + 1).map( (page)=>{
+              
+              return <li className="page-item">
+                      <button 
+                      onClick= {()=>setPage(page-1)} 
+                      type="button" className="page-link">
+                        {page}
+                      </button>
+                    </li>
+             } )  }
+             </ul>
             </nav>
           </div>
+         
           <div className="col-md-3">
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
-            </a>
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
-            </a>
-            <a href="#" className="tag-pill tag-default">
-              {faker.lorem.word()}
-            </a>
+          {tags?.data?.data?.tags.map((tag, key)=>
+           (tag.match(/^[0-9A-Za-z]+$/)? 
+            <a onClick={()=>setHeadTag(tag)} href="#" className="tag-pill tag-default">{tag}</a> 
+            : null
+          ))}
           </div>
         </div>
       </div>
