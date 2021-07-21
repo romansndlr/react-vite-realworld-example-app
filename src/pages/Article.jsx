@@ -1,20 +1,46 @@
 import React from 'react'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker'
+import { useParams } from 'react-router-dom'
+import { useQuery } from 'react-query'
+import ConduitAPI from '../services/conduit_api'
 
 function Article() {
+  const { articleId } = useParams();
+  const { isLoading, isError, data, error } = useQuery(
+    [`article-${articleId}`, articleId],
+    () => ConduitAPI.get_article(articleId),
+    {placeholderData: {
+        data: {
+          article: {
+            author: "Author"
+          }
+        }
+      }
+    })
+
+  if (isLoading) {
+    return <span>Loading...</span>
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>
+  }
+
+  const {article} = data.data;
+
   return (
     <div className="article-page">
       <div className="banner">
         <div className="container">
-          <h1>{faker.lorem.sentence()}</h1>
+          <h1>{article.title}</h1>
           <div className="article-meta">
             <a>
-              <img src={faker.image.avatar()} />
+              <img src={article.author.image} />
             </a>
             <div className="info">
-              <a className="author">{faker.internet.userName()}</a>
-              <span className="date">{new Date(faker.date.past()).toDateString()}</span>
+              <a className="author">{article.author.username}</a>
+              <span className="date">{new Date(article.updatedAt).toDateString()}</span>
             </div>
             <span>
               <a className="btn btn-outline-secondary btn-sm">
@@ -31,7 +57,7 @@ function Article() {
               className="btn btn-sm action-btn btn-outline-secondary " // Change to btn-secondary if following
             >
               <i className="ion-plus-round" />
-              &nbsp; Follow {faker.internet.userName()} {/* Change to Unfollow if following */}
+              &nbsp; Follow {article.author.username} {/* Change to Unfollow if following */}
             </button>
             &nbsp;&nbsp;
             <button
@@ -40,7 +66,7 @@ function Article() {
               disabled={false}
             >
               <i className="ion-heart" />
-              &nbsp; Favorite Article <span className="counter">({faker.datatype.number()})</span>{' '}
+              &nbsp; Favorite Article <span className="counter">({article.favoritesCount})</span>{' '}
               {/* Change to Unfavorite if favorited */}
             </button>
           </div>
@@ -49,19 +75,18 @@ function Article() {
       <div className="container page">
         <div className="row article-content">
           <div className="col-md-12">
-            <p>{faker.lorem.sentence()}</p>
-            <p>{faker.lorem.paragraph()}</p>
+            <p>{article.body}</p>
           </div>
         </div>
         <hr />
         <div className="article-actions">
           <div className="article-meta">
             <a>
-              <img src={faker.image.avatar()} />
+              <img src={article.author.image} />
             </a>
             <div className="info">
-              <a className="author">{faker.internet.userName()}</a>
-              <span className="date">{new Date(faker.date.past()).toDateString()}</span>
+              <a className="author">{article.author.username}</a>
+              <span className="date">{new Date(article.updatedAt).toDateString()}</span>
             </div>
             <span>
               <a className="btn btn-outline-secondary btn-sm">
@@ -78,7 +103,7 @@ function Article() {
               className="btn btn-sm action-btn btn-outline-secondary " // Change to btn-secondary if following
             >
               <i className="ion-plus-round" />
-              &nbsp; Follow {faker.internet.userName()} {/* Change to Unfollow if following */}
+              &nbsp; Follow {article.author.username} {/* Change to Unfollow if following */}
             </button>
             &nbsp;&nbsp;
             <button
@@ -87,7 +112,7 @@ function Article() {
               disabled={false}
             >
               <i className="ion-heart" />
-              &nbsp; Favorite Article <span className="counter">({faker.datatype.number()})</span>{' '}
+              &nbsp; Favorite Article <span className="counter">({article.favoritesCount})</span>{' '}
               {/* Change to Unfavorite if favorited */}
             </button>
           </div>
