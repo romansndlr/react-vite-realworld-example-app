@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useQuery } from 'react-query'
 import classNames from 'classnames'
 import TagsComp from '../component/TagsComp'
+import ArticleComp from '../component/ArticleComp'
 
 function Home() {
   
@@ -54,35 +55,7 @@ function Home() {
                 
               </ul>
             </div>
-            {articles?.map((article,index)=>( 
-               <div className="article-preview">
-                <div className="article-meta">
-                  <a>
-                    <img src={article.author.image} />
-                  </a>
-                  <div className="info">
-                    <a className="author">{article.author.username}</a>
-                    <span className="date">{new Date(article.createdAt).toDateString()}</span>
-                  </div>
-                  <button
-                    type="button"
-                    className={article.favorited? "btn-primary" : "btn btn-sm btn-outline-primary"} // Change to btn-primary if favorited
-                    disabled={false}
-                  >
-                    <i className="ion-heart" />
-                    &nbsp; {article.favoritesCount}
-                  </button>
-                </div>
-                <a className="preview-link">
-                  <h1>{article.title}</h1>
-                  <p>{article.description}</p>
-                  <span>Read more...</span>
-                  {article.tagList.map((tag,index)=> (
-                    <ul className="tag-list">
-                      <li className="tag-default tag-pill tag-outline">{tag}</li>
-                    </ul>))}
-                </a>
-              </div>))}
+            <ArticleComp headTag={headTag} offset={offset} limit={LIMIT_SIZE}/>
             <nav>
             <ul className="pagination">
             { Array(pages).fill(0).map((_, i) => i + 1).map( (page)=>{
@@ -100,12 +73,7 @@ function Home() {
           </div>
          
           <div className="col-md-3">
-            <TagsComp handleClick={(tag)=>setHeadTag(tag)} />
-          {/* {tagsToShow?.map((tag, key)=>(
-            tag.match(/^[0-9A-Za-z]+$/)? 
-            <a onClick={()=>setHeadTag(tag)} key={key} href="#" className="tag-pill tag-default">{tag}</a> 
-            : null
-          ))} */}
+            <TagsComp handleClick={(e)=>setHeadTag(e.target.innerHTML )} />
           </div>
         </div>
       </div>

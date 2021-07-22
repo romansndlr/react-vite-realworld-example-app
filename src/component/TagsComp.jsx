@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 function TagsComp(props){
     const {handleClick }= props;
     
-    const tags  = useQuery ('tags', { 
+    const tagsRes  = useQuery ('tags', { 
         placeholderData : {
           data: { 
             tags : [] 
@@ -12,14 +12,17 @@ function TagsComp(props){
         }
       });
 
-    const tagsToShow= tags?.data?.tags
+    const tagsToShow= tagsRes?.data?.tags
 
     return(
     <div> playing with components
         {tagsToShow?.map((tag, key)=>(
             tag.match(/^[0-9A-Za-z]+$/)&& 
-            <a 
-              onClick={(tag)=> handleClick(tag)} 
+            <a
+               
+              onClick={(tag)=>{
+                handleClick(tag)
+              }} 
               key={key} href="#" 
               className="tag-pill tag-default">
                 {tag}
