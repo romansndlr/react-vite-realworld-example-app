@@ -1,29 +1,25 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import axios from 'axios'
-import faker from 'faker'
 import React from 'react'
 import { useState } from 'react'
 import { useQuery } from 'react-query'
 import classNames from 'classnames'
+import TagsComp from '../component/TagsComp'
 
 function Home() {
   
-  const [headTag, setHeadTag] = useState(null)
+  const [headTag, setHeadTag] = useState("")
   const [page, setPage] = useState(0)
   const LIMIT_SIZE= 20;
   const offset= page* LIMIT_SIZE;
 
-  const articleRes= useQuery (['get-articles', {tag: headTag, offset:offset}], 
-  ()=> axios.get('http://conduit.productionready.io/api/articles',
-  {params: {tag:headTag, offset:offset}}
-    ));
+  const articleRes= useQuery (['articles', {tag: headTag, offset:offset, limit:LIMIT_SIZE }]);
   
-  const tags  = useQuery ('get-tags', ()=> axios.get('http://conduit.productionready.io/api/tags'),
-   { placeholderData : { data:{ tags : [] }}});
   
-  const articles = articleRes?.data?.data.articles;
-  const articleCount = articleRes?.data?.data?.articlesCount
+  const articles = articleRes?.data?.articles;
+  const articleCount = articleRes?.data?.articlesCount
   const pages = articleCount/ LIMIT_SIZE;
+  
+  
 
   if (articleRes.isLoading) return 'Loading...'
   if (articleRes.error) return 'An error has occurred: ' + articleRes.error?.message
@@ -104,11 +100,12 @@ function Home() {
           </div>
          
           <div className="col-md-3">
-          {tags?.data?.data?.tags.map((tag, key)=>
-           (tag.match(/^[0-9A-Za-z]+$/)? 
-            <a onClick={()=>setHeadTag(tag)} href="#" className="tag-pill tag-default">{tag}</a> 
+            <TagsComp handleClick={(tag)=>setHeadTag(tag)} />
+          {/* {tagsToShow?.map((tag, key)=>(
+            tag.match(/^[0-9A-Za-z]+$/)? 
+            <a onClick={()=>setHeadTag(tag)} key={key} href="#" className="tag-pill tag-default">{tag}</a> 
             : null
-          ))}
+          ))} */}
           </div>
         </div>
       </div>
