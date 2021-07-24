@@ -1,7 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Article, Home } from './pages'
-import { ReactQueryDevtools } from 'react-query/devtools'
 
 import './App.css'
 
@@ -57,7 +56,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/article/:articleId" element={<Article />} />
+          <Route path="/article/:slug" element={<Article />} />
         </Routes>
       </main>
       <footer>
