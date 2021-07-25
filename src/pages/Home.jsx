@@ -5,6 +5,7 @@ import { useQuery } from 'react-query'
 import classNames from 'classnames'
 import TagsComp from '../component/TagsComp'
 import ArticleComp from '../component/ArticleComp'
+import useArticles from '../hooks/useArticles'
 
 function Home() {
   
@@ -13,8 +14,8 @@ function Home() {
   const LIMIT_SIZE= 20;
   const offset= page* LIMIT_SIZE;
 
-  const articleRes= useQuery (['articles', {tag: headTag, offset:offset, limit:LIMIT_SIZE }]);
-  
+  // const articleRes= useQuery (['articles', {tag: headTag, offset:offset, limit:LIMIT_SIZE }]);
+  const articleRes= useArticles({tag: headTag, offset:offset, limit:LIMIT_SIZE })
   
   const articles = articleRes?.data?.articles;
   const articleCount = articleRes?.data?.articlesCount
