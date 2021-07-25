@@ -1,12 +1,16 @@
+import axios from "axios";
 import React from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import ArticleModel from "../models/Article";
 
-function ArticleComp(props){
+function ArticlesComp(props){
     const { headTag, offset , limit }= props;
 
     const articleRes= useQuery (['articles', {tag: headTag, offset:offset, limit:limit }]);
-    const articles = articleRes?.data?.articles;
+    const articles = articleRes?.data?.articles?.map((article)=> new ArticleModel(article)) ;
+    console.log(articles)
     const articleCount = articleRes?.data?.articlesCount
+    const favorite= useMutation((slug)=> axios.post(`/articles/${slug}/favorite`))
 
     return(
         <div>
@@ -21,6 +25,12 @@ function ArticleComp(props){
                     <span className="date">{new Date(article.createdAt).toDateString()}</span>
                   </div>
                   <button
+                    
+                    onClick={(e)=>{
+                      console.log(article.slug)
+                      // favorite.mutate(e.target.key)
+                    }
+                    } 
                     type="button"
                     className={article.favorited? "btn-primary" : "btn btn-sm btn-outline-primary"} // Change to btn-primary if favorited
                     disabled={false}
@@ -44,4 +54,4 @@ function ArticleComp(props){
 
 }
 
-export default ArticleComp
+export default ArticlesComp

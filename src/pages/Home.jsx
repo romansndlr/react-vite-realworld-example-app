@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQuery } from 'react-query'
 import classNames from 'classnames'
 import TagsComp from '../component/TagsComp'
-import ArticleComp from '../component/ArticleComp'
+import ArticlesComp from '../component/ArticlesComp'
 import useArticles from '../hooks/useArticles'
 
 function Home() {
@@ -16,6 +16,7 @@ function Home() {
 
   // const articleRes= useQuery (['articles', {tag: headTag, offset:offset, limit:LIMIT_SIZE }]);
   const articleRes= useArticles({tag: headTag, offset:offset, limit:LIMIT_SIZE })
+  console.log(articleRes)
   
   const articles = articleRes?.data?.articles;
   const articleCount = articleRes?.data?.articlesCount
@@ -56,7 +57,7 @@ function Home() {
                 
               </ul>
             </div>
-            <ArticleComp headTag={headTag} offset={offset} limit={LIMIT_SIZE}/>
+            <ArticlesComp headTag={headTag} offset={offset} limit={LIMIT_SIZE}/>
             <nav>
             <ul className="pagination">
             { Array(pages).fill(0).map((_, i) => i + 1).map( (page)=>{
