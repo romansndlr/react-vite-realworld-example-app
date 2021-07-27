@@ -1,18 +1,20 @@
 import React from 'react'
 import { Link, useNavigate, useMatch } from 'react-router-dom'
 import { Formik, Form, Field } from 'formik'
+import axios from 'axios'
 import { FormErrors } from '../components'
-import { http, setAuthUser } from '../utils'
+import { useAuth } from '../hooks'
 
 function Auth() {
   const navigate = useNavigate()
   const isRegister = useMatch('/register')
+  const { login } = useAuth()
 
   async function onSubmit(values, actions) {
     try {
-      const { data } = await http.post(`/users${isRegister ? '' : '/login'}`, { user: values })
+      const { data } = await axios.post(`/users${isRegister ? '' : '/login'}`, { user: values })
 
-      setAuthUser(data.user)
+      login(data.user)
 
       navigate('/')
     } catch (error) {

@@ -2,7 +2,7 @@ import { Form, Formik, Field } from 'formik'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
-import { http } from '../utils'
+import axios from 'axios'
 import { FormErrors, TagsInput } from '../components'
 import { useArticleQuery } from '../hooks'
 
@@ -15,7 +15,7 @@ function Editor() {
 
   async function onSubmit(values, { setErrors }) {
     try {
-      const { data } = await http[slug ? 'put' : 'post'](`/articles${slug ? `/${slug}` : ''}`, { article: values })
+      const { data } = await axios[slug ? 'put' : 'post'](`/articles${slug ? `/${slug}` : ''}`, { article: values })
 
       if (slug) {
         queryClient.invalidateQueries(`/articles/${slug}`)

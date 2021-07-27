@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "react-query"
-import { useParams } from "react-router-dom"
-import { http } from "../utils"
+import axios from 'axios'
+import { useMutation, useQueryClient } from 'react-query'
+import { useParams } from 'react-router-dom'
 
 function useAddCommentMutation() {
   const { slug } = useParams()
@@ -8,7 +8,7 @@ function useAddCommentMutation() {
   const queryKey = `/articles/${slug}/comments`
 
   return useMutation(
-    (/** @type {{comment: { body: string }}} */ payload) => http.post(`/articles/${slug}/comments`, payload),
+    (/** @type {{comment: { body: string }}} */ payload) => axios.post(`/articles/${slug}/comments`, payload),
     {
       onMutate: async ({ comment }) => {
         const previousComments = queryClient.getQueryData(queryKey)

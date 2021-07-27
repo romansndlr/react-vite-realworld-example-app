@@ -2,11 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
-import { http } from './utils'
+import axios from 'axios'
 import App from './App'
 
+axios.defaults.baseURL = 'https://conduit.productionready.io/api'
+
 const defaultQueryFn = async ({ queryKey }) => {
-  const { data } = await http.get(queryKey[0], { params: queryKey[1] })
+  const { data } = await axios.get(queryKey[0], { params: queryKey[1] })
   return data
 }
 

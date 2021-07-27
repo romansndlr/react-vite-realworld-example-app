@@ -1,6 +1,6 @@
+import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { useParams } from 'react-router-dom'
-import { http } from '../utils'
 
 function useDeleteCommentMutation() {
   const { slug } = useParams()
@@ -8,7 +8,7 @@ function useDeleteCommentMutation() {
   const queryKey = `/articles/${slug}/comments`
 
   return useMutation(
-    (/** @type {{commentId: number}} */ { commentId }) => http.delete(`/articles/${slug}/comments/${commentId}`),
+    (/** @type {{commentId: number}} */ { commentId }) => axios.delete(`/articles/${slug}/comments/${commentId}`),
     {
       onMutate: async ({ commentId }) => {
         const previousComments = queryClient.getQueryData(queryKey)

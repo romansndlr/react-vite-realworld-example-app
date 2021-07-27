@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient, useMutation } from 'react-query'
-import { http } from '../utils'
+import axios from 'axios'
 import useAuth from './useAuth'
 
 function useFavoriteArticleMutation(slug) {
@@ -11,7 +11,7 @@ function useFavoriteArticleMutation(slug) {
 
   return useMutation(
     (/** @type {{favorited: boolean}} */ { favorited }) =>
-      http[favorited ? 'delete' : 'post'](`/articles/${slug}/favorite`),
+      axios[favorited ? 'delete' : 'post'](`/articles/${slug}/favorite`),
     {
       onMutate: async () => {
         const previousArticle = queryClient.getQueryData(queryKey)

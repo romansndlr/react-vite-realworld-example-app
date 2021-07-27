@@ -2,8 +2,8 @@ import { Formik, Form, Field } from 'formik'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
-import { http, logout, setAuthUser } from '../utils'
-import { useUserQuery } from '../hooks'
+import axios from 'axios'
+import { useAuth, useUserQuery } from '../hooks'
 import { FormErrors } from '../components'
 
 function Settings() {
@@ -12,14 +12,15 @@ function Settings() {
   } = useUserQuery()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { logout } = useAuth()
 
   async function onSubmit(values, { setErrors }) {
     try {
-      const { data } = await http.put(`/user`, { user: values })
+      const { data } = await axios.put(`/user`, { user: values })
 
       const updatedUsername = data?.user?.username
 
-      setAuthUser(data?.user)
+      logout(data?.user)
 
       queryClient.invalidateQueries(`/profiles/${updatedUsername}`)
       queryClient.invalidateQueries(`/user`)
