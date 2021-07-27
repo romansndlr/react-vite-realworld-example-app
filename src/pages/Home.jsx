@@ -28,6 +28,10 @@ function Home() {
           <div className="col-md-9">
             <div className="feed-toggle">
               <ul className="nav nav-pills outline-active">
+                {/* Should be set to active by default if user is auth */}
+                <li className="nav-item">
+                  <button type="button">Your Feed</button>
+                </li>
                 <li className="nav-item">
                   <button
                     onClick={() => setActiveTag(null)}
@@ -44,7 +48,6 @@ function Home() {
                 )}
               </ul>
             </div>
-
             {data.articles?.map((article) => (
               <Article article={article} filters={filters} />
             ))}
