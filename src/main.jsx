@@ -1,26 +1,19 @@
 import React from 'react'
 import axios from 'axios'
 import ReactDOM from 'react-dom'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+
 import App from './App'
 
-axios.defaults.baseURL = 'https://conduit.productionready.io/api'
-
-const defaultQueryFn = async ({ queryKey }) => {
-  const { data } = await axios.get(queryKey[0], { params: queryKey[1] })
-  return data
-}
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      queryFn: defaultQueryFn,
-    },
-  },
-})
+const queryClient = new QueryClient()
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} containerElement="div" />}
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )
