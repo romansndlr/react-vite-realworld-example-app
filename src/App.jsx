@@ -28,14 +28,10 @@ function App() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" to="/register">
-                  Sign up
-                </a>
+                <a className="nav-link" /* to="/register" */>Sign up</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" to="/login">
-                  Sign in
-                </a>
+                <a className="nav-link" /* to="/login" */>Sign in</a>
               </li>
             </ul>
           </div>

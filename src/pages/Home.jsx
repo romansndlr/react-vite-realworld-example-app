@@ -1,8 +1,35 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import faker from 'faker'
+
+import classNames from 'classnames'
 import React from 'react'
 
 function Home() {
+  const [offset, setOffset] = React.useState(0)
+  const [activeTag, setActiveTag] = React.useState(null)
+  const tagsQuery = useQuery('/tags', {
+    placeholderData: {
+      tags: [],
+    },
+  })
+
+  const articlesQuery = useQuery(
+    ['/articles', { offset, tag: activeTag, limit: DEFAULT_LIMIT }],
+
+    {
+      placeholderData: {
+        data: {
+          articles: [],
+          articlesCount: 0,
+        },
+        staleTime: 10000,
+      },
+    }
+  )
+
+  const articles = articlesQuery?.data?.data?.articles
+  const articlesCount = articlesQuery?.data?.data?.articlesCount
+  const tags = tagsQuery?.data?.tags
+
   return (
     <div className="home-page">
       <div className="banner">
@@ -29,33 +56,44 @@ function Home() {
                 </li>
               </ul>
             </div>
-            <div className="article-preview">
-              <div className="article-meta">
-                <a>
-                  <img src={faker.image.avatar()} />
-                </a>
-                <div className="info">
-                  <a className="author">{faker.internet.userName()}</a>
-                  <span className="date">{new Date(faker.date.past()).toDateString()}</span>
+
+            {articles?.map((article) => {
+              return (
+                <div className="article-preview" key={article?.slug}>
+                  <div className="article-meta">
+                    <a>
+                      <img src={article?.author?.image} />
+                    </a>
+                    <div className="info">
+                      <a className="author">{article?.author?.username}</a>
+                      <span className="date">{new Date(article?.createdAt).toDateString()}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className={classNames('btn btn-sm', {
+                        'btn-outline-primary': !article?.favorited,
+                        'btn-primary': article?.favorited,
+                      })}
+                      disabled={false}
+                    >
+                      <i className="ion-heart" />
+                      &nbsp; {article?.favoritesCount}
+                    </button>
+                  </div>
+                  <a className="preview-link">
+                    <h1>{article?.title}</h1>
+                    <p>{article?.description}</p>
+                    <span>Read more...</span>
+                    <ul className="tag-list">
+                      {article?.tagList.map((tag) => {
+                        ;<li className="tag-default tag-pill tag-outline">{tag}</li>
+                      })}
+                    </ul>
+                  </a>
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-primary" // Change to btn-primary if favorited
-                  disabled={false}
-                >
-                  <i className="ion-heart" />
-                  &nbsp; {faker.datatype.number()}
-                </button>
-              </div>
-              <a className="preview-link">
-                <h1>{faker.lorem.sentence()}</h1>
-                <p>{faker.lorem.paragraph()}</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">{faker.lorem.word()}</li>
-                </ul>
-              </a>
-            </div>
+              )
+            })}
+            {articlesQuery.isFetching && <div className="article-preview">Loading articles...</div>}
             <nav>
               <ul className="pagination">
                 <li className="page-item">
