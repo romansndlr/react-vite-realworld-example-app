@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Article, PopularTags } from '../components'
-import { useArticle } from '../hooks'
+import { useArticles } from '../hooks'
 
 const DEFAULT_LIMIT = 10
 
@@ -10,7 +10,7 @@ function Home() {
   const [activeTag, setActiveTag] = React.useState(null)
   const filters = { limit: DEFAULT_LIMIT, offset, tag: activeTag }
 
-  const { data, isFetching } = useArticle(filters)
+  const { data, isFetching } = useArticles(filters)
 
   return (
     <div className="home-page">
