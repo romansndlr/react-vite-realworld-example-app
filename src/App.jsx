@@ -5,6 +5,10 @@ import { Article, Home } from './pages'
 import './App.css'
 
 function App() {
+  // Set "active" class on the active link
+  // Show links according to auth status
+  // Set up new routes for /login and /register
+
   return (
     <Router>
       <header>
@@ -15,6 +19,7 @@ function App() {
               <li className="nav-item">
                 <a className="nav-link">Home</a>
               </li>
+              {/* Start logged in */}
               <li className="nav-item">
                 <a className="nav-link">
                   <i className="ion-compose" />
@@ -28,15 +33,22 @@ function App() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" to="/register">
-                  Sign up
+                <a className="nav-link">
+                  {/* Auth user avatar */}
+                  <img src="#" />
+                  {/* Auth user username */}
                 </a>
+              </li>
+              {/* End logged in */}
+
+              {/* Start logged out */}
+              <li className="nav-item">
+                <a className="nav-link">Sign up</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" to="/login">
-                  Sign in
-                </a>
+                <a className="nav-link">Sign in</a>
               </li>
+              {/* End logged out */}
             </ul>
           </div>
         </nav>
