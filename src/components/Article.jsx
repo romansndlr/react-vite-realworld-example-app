@@ -3,45 +3,37 @@ import classNames from 'classnames'
 import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 
-export default function Article({ article, filters }) {
-  const [activeTag, setActiveTag] = React.useState(null)
+const Article = ({ article, filters }) => {
   const queryClient = useQueryClient()
   const queryKey = ['/articles', filters]
   const { slug, favorited } = article
 
   const favorite = useMutation(() => axios[favorited ? 'delete' : 'post'](`/articles/${article.slug}/favorite`), {
-    // When mutate is called:
     onMutate: async () => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries(queryKey)
 
-      // Snapshot the previous value
       const previousArticles = queryClient.getQueryData(queryKey)
 
-      // Optimistically update to the new value
       queryClient.setQueryData(queryKey, ({ articles, articlesCount }) => ({
         articlesCount,
-        articles: articles.map((/** @type {{ slug: any; favorited: any; favoritesCount: number; }} */ article) => {
-          if (article.slug !== slug) return article
+        articles: articles.map((currentArticle) => {
+          if (currentArticle.slug !== slug) return article
 
           return {
             ...article,
-            favorited: !article.favorited,
-            favoritesCount: favorited ? article.favoritesCount - 1 : article.favoritesCount + 1,
+            favorited: !currentArticle.favorited,
+            favoritesCount: favorited ? currentArticle.favoritesCount - 1 : currentArticle.favoritesCount + 1,
           }
         }),
       }))
 
-      // Return a context object with the snapshotted value
       return { previousArticles }
     },
 
-    // If the mutation fails, use the context returned from onMutate to roll back
     onError: (err, newTodo, context) => {
       queryClient.setQueryData(queryKey, context.previousArticles)
     },
 
-    // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries(queryKey)
     },
@@ -60,7 +52,7 @@ export default function Article({ article, filters }) {
         <button
           onClick={() => favorite.mutate()}
           type="button"
-          className={classNames('btn btn-sm', {
+          className={classNames('btn btn-sm pull-xs-right', {
             'btn-outline-primary': !article?.favorited,
             'btn-primary': article?.favorited,
           })}
@@ -75,15 +67,15 @@ export default function Article({ article, filters }) {
         <p>{article?.description}</p>
         <span>Read more...</span>
         <ul className="tag-list">
-          {article?.tagList.map((tag) => {
-            return (
-              <li onClick={() => setActiveTag(tag)} className="tag-default tag-pill tag-outline">
-                {tag}
-              </li>
-            )
-          })}
+          {article?.tagList.map((tag) => (
+            <li key={tag} className="tag-default tag-pill tag-outline">
+              {tag}
+            </li>
+          ))}
         </ul>
       </a>
     </div>
   )
 }
+
+export default Article

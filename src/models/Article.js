@@ -1,4 +1,5 @@
-import { Author } from '.'
+import Author from './Author'
+
 class Article {
   constructor({
     slug = '',
