@@ -1,8 +1,5 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import axios from 'axios'
-import classNames from 'classnames'
 import React from 'react'
-import { useQuery } from 'react-query'
+import classNames from 'classnames'
 import { Article, PopularTags } from '../components'
 import { useArticle } from '../hooks'
 
@@ -30,7 +27,9 @@ function Home() {
               <ul className="nav nav-pills outline-active">
                 {/* Should be set to active by default if user is auth */}
                 <li className="nav-item">
-                  <button type="button">Your Feed</button>
+                  <button type="button" className="nav-link">
+                    Your Feed
+                  </button>
                 </li>
                 <li className="nav-item">
                   <button
