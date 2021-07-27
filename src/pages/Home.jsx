@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import React from 'react'
 import { useQuery } from 'react-query'
 import { Article, PopularTags } from '../components'
-import useArticle from '../hooks/useArticle'
+import { useArticle } from '../hooks'
 
 const DEFAULT_LIMIT = 10
 
