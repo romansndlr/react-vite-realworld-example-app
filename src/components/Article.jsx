@@ -3,7 +3,8 @@ import classNames from 'classnames'
 import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 
-const Article = ({ article, filters }) => {
+const Article = ({ article, filters, userLoggedIn }) => {
+  console.log(userLoggedIn)
   const queryClient = useQueryClient()
   const queryKey = ['/articles', filters]
   const { slug, favorited } = article
@@ -49,18 +50,20 @@ const Article = ({ article, filters }) => {
           <a className="author">{article?.author?.username}</a>
           <span className="date">{article?.createdAt}</span>
         </div>
-        <button
-          onClick={() => favorite.mutate()}
-          type="button"
-          className={classNames('btn btn-sm pull-xs-right', {
-            'btn-outline-primary': !article?.favorited,
-            'btn-primary': article?.favorited,
-          })}
-          disabled={false}
-        >
-          <i className="ion-heart" />
-          &nbsp; {article?.favoritesCount}
-        </button>
+        {userLoggedIn ? (
+          <button
+            onClick={() => favorite.mutate()}
+            type="button"
+            className={classNames('btn btn-sm pull-xs-right', {
+              'btn-outline-primary': !article?.favorited,
+              'btn-primary': article?.favorited,
+            })}
+            disabled={false}
+          >
+            <i className="ion-heart" />
+            &nbsp; {article?.favoritesCount}
+          </button>
+        ) : null}
       </div>
       <a className="preview-link">
         <h1>{article?.title}</h1>

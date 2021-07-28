@@ -5,7 +5,7 @@ import { useArticles } from '../hooks'
 
 const DEFAULT_LIMIT = 10
 
-function Home() {
+function Home({ userLoggedIn }) {
   const [offset, setOffset] = React.useState(0)
   const [activeTag, setActiveTag] = React.useState(null)
   const filters = { limit: DEFAULT_LIMIT, offset, tag: activeTag }
@@ -16,8 +16,8 @@ function Home() {
     <div className="home-page">
       <div className="banner">
         <div className="container">
-          <h1 className="logo-font">conduit</h1>
-          <p>A place to share your knowledge.</p>
+          <h1 className="logo-font">Shagsters</h1>
+          <p>A place to share your Fleem.</p>
         </div>
       </div>
       <div className="container page">
@@ -48,7 +48,7 @@ function Home() {
               </ul>
             </div>
             {data.articles?.map((article) => (
-              <Article article={article} filters={filters} />
+              <Article article={article} filters={filters} userLoggedIn={userLoggedIn} />
             ))}
             {isFetching && <div className="article-preview">Loading articles...</div>}
             <nav>
