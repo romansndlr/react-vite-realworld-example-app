@@ -13,7 +13,7 @@ function useArticle({ limit, offset, tag }) {
   return {
     data: {
       articles: data?.articles.map((article) => new Article(article)),
-      articlesCount: data?.articleCount,
+      articlesCount: data?.articlesCount,
     },
     ...query,
   }

@@ -8,9 +8,7 @@ import App from './App'
 axios.defaults.baseURL = 'https://conduit.productionready.io/api'
 
 const defaultQueryFn = async ({ queryKey }) => {
-  console.log(queryKey)
   const { data } = await axios.get(queryKey[0], { params: queryKey[1] })
-  console.log(data)
   return data
 }
 

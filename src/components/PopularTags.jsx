@@ -2,12 +2,12 @@ import React from 'react'
 import { useQuery } from 'react-query'
 
 export default function PopularTags({ onClick }) {
-  const { data, isFetching } = useQuery(['/tags', {}], {
+  const { data, isFetching } = useQuery('/tags', {
     placeholderData: {
       tags: [],
     },
   })
-  console.log('DATA:', data)
+
   return (
     <React.Fragment>
       <div className="sidebar">

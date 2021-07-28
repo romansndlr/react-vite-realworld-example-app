@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import React from 'react'
 import { useQuery } from 'react-query'
 import { Article, PopularTags } from '../components'
-import useArticle from '../hooks/useArticle'
+import { useArticle } from '../hooks'
 
 const DEFAULT_LIMIT = 10
 
@@ -22,6 +22,9 @@ function Home() {
           <h1 className="logo-font">conduit</h1>
           <p>A place to share your knowledge.</p>
         </div>
+      </div>
+      <div>
+        <button>Infinite scroll</button>
       </div>
       <div className="container page">
         <div className="row">
