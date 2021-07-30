@@ -1,4 +1,4 @@
-# ![React + Vite Example App](project-logo.png)
+# React + Vite Example App
 
 > ### React + Vite codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
 
