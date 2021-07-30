@@ -20,26 +20,26 @@ const state = proxyWithComputed(
   }
 )
 
-function login(user) {
-  state.authUser = user
+const actions = {
+  login: (user) => {
+    state.authUser = user
 
-  window.localStorage.setItem('jwtToken', btoa(JSON.stringify(state.authUser)))
+    window.localStorage.setItem('jwtToken', btoa(JSON.stringify(state.authUser)))
 
-  axios.defaults.headers.Authorization = `Token ${state.authUser.token}`
-}
+    axios.defaults.headers.Authorization = `Token ${state.authUser.token}`
+  },
+  logout: () => {
+    state.authUser = {}
 
-function logout() {
-  state.authUser = {}
+    window.localStorage.removeItem('jwtToken')
+  },
+  checkAuth: () => {
+    const authUser = getAuthUser()
 
-  window.localStorage.removeItem('jwtToken')
-}
-
-function checkAuth() {
-  const authUser = getAuthUser()
-
-  if (!authUser || isEmpty(authUser)) {
-    logout()
-  }
+    if (!authUser || isEmpty(authUser)) {
+      actions.logout()
+    }
+  },
 }
 
 function useAuth() {
@@ -47,9 +47,7 @@ function useAuth() {
 
   return {
     ...snap,
-    login,
-    logout,
-    checkAuth,
+    ...actions,
   }
 }
 

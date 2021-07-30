@@ -2,17 +2,10 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { Home, Settings, Editor, Article, Profile, Auth } from './pages'
 import { AuthRoute, GuestRoute, Navbar } from './components'
-import { useAuth, useInterval } from './hooks'
 
 import './App.css'
 
 function App() {
-  const { checkAuth } = useAuth()
-
-  useInterval(() => {
-    checkAuth()
-  }, 1000)
-
   return (
     <Router>
       <header>
