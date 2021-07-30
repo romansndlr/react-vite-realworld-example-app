@@ -1,4 +1,5 @@
 # React + Vite Example App
+[![Netlify Status](https://api.netlify.com/api/v1/badges/4f108734-4ada-4033-9a04-a50ba696b360/deploy-status)](https://app.netlify.com/sites/react-vite-realworld/deploys)
 
 > ### React + Vite codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
 
