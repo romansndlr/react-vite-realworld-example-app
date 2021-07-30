@@ -2,7 +2,7 @@
 
 > ### React + Vite codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
 
-[RealWorld](https://github.com/gothinkster/realworld) [Demo](https://react-vite-realworld.netlify.app/)
+[RealWorld](https://github.com/gothinkster/realworld)&nbsp;&nbsp;&nbsp;&nbsp;[Demo](https://react-vite-realworld.netlify.app/)
 
 ## Getting started
 
