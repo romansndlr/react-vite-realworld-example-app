@@ -1,13 +1,11 @@
 import React from 'react'
 import classNames from 'classnames'
-import { useMutation, useQueryClient } from 'react-query'
 import axios from 'axios'
+import { useMutation, useQueryClient } from 'react-query'
 
-function Article({ article, filters, userLoggedIn }) {
+const Article = ({ article, filters }) => {
   const queryClient = useQueryClient()
-
   const queryKey = ['/articles', filters]
-
   const { slug, favorited } = article
 
   const favorite = useMutation(() => axios[favorited ? 'delete' : 'post'](`/articles/${article.slug}/favorite`), {

@@ -5,7 +5,9 @@ import { Article, Home } from './pages'
 import './App.css'
 
 function App() {
-  const [userLoggedIn, setUserLoggedIn] = React.useState(false)
+  // Set "active" class on the active link
+  // Show links according to auth status
+  // Set up new routes for /login and /register
 
   return (
     <Router>
@@ -17,31 +19,36 @@ function App() {
               <li className="nav-item">
                 <a className="nav-link">Home</a>
               </li>
-              {userLoggedIn ? (
-                <React.Fragment>
-                  <li className="nav-item">
-                    <a className="nav-link">
-                      <i className="ion-compose" />
-                      &nbsp;New Post
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link">
-                      <i className="ion-gear-a" />
-                      &nbsp;Settings
-                    </a>
-                  </li>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <li className="nav-item">
-                    <a className="nav-link" /* to="/register" */>Sign up</a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" /*  to="/login" */>Sign in</a>
-                  </li>
-                </React.Fragment>
-              )}
+              {/* Start logged in */}
+              <li className="nav-item">
+                <a className="nav-link">
+                  <i className="ion-compose" />
+                  &nbsp;New Post
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link">
+                  <i className="ion-gear-a" />
+                  &nbsp;Settings
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link">
+                  {/* Auth user avatar */}
+                  <img src="#" />
+                  {/* Auth user username */}
+                </a>
+              </li>
+              {/* End logged in */}
+
+              {/* Start logged out */}
+              <li className="nav-item">
+                <a className="nav-link">Sign up</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link">Sign in</a>
+              </li>
+              {/* End logged out */}
             </ul>
           </div>
         </nav>
