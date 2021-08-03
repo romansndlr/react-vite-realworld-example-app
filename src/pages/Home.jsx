@@ -48,7 +48,7 @@ function Home({ userLoggedIn }) {
               </ul>
             </div>
             {data.articles?.map((article) => (
-              <Article article={article} filters={filters} />
+              <Article article={article} filters={filters} userLoggedIn={userLoggedIn} />
             ))}
             {isFetching && <div className="article-preview">Loading articles...</div>}
             <nav>

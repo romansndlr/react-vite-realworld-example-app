@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'

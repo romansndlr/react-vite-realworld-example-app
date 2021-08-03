@@ -2,16 +2,12 @@ import { useQuery } from 'react-query'
 import { Article } from '../models'
 
 function useArticles({ offset, tag, limit }) {
-  const { data, ...query } = useQuery(
-    ['/articles', { offset, tag, limit }],
-
-    {
-      placeholderData: {
-        articles: [],
-        articlesCount: 0,
-      },
-    }
-  )
+  const { data, ...query } = useQuery(['/articles', { offset, tag, limit }], {
+    placeholderData: {
+      articles: [],
+      articlesCount: 0,
+    },
+  })
 
   return {
     data: {

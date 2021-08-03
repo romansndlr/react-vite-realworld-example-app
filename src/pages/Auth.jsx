@@ -1,10 +1,38 @@
+import axios from 'axios'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-function Auth() {
+function Auth({ setUserLoggedIn }) {
   // Get the token from the API
   // Store in localStorage
   // Set authUser as globally available state
   // Redirect to home page
+
+  const [errors, setErros] = React.useState('')
+
+  const navigate = useNavigate()
+
+  async function handelSubmit(event) {
+    event.preventDefault()
+    const username = event.target.username.value
+    const email = event.target.email.value
+    const password = event.target.password.value
+
+    try {
+      const res = await axios.post('/users', { user: { username, email, password } })
+
+      if (res.status === 200) {
+        localStorage.setItem('token', res.data.user.token)
+        setUserLoggedIn(true)
+        navigate('/')
+        axios.defaults.headers.common['Authorization'] = 'Token ' + res.data.user.token
+      }
+    } catch (err) {
+      if (err.response.status === 422) {
+        setErros(JSON.stringify(err.response.data.errors))
+      }
+    }
+  }
 
   return (
     <div className="auth-page">
@@ -17,7 +45,7 @@ function Auth() {
               {/* Change to "Need an account?" when on login page */}
               <a href="#">Have an account?</a>
             </p>
-            <form>
+            <form onSubmit={handelSubmit}>
               {/* Remove on login page */}
               <fieldset className="form-group">
                 <input type="text" name="username" className="form-control form-control-lg" placeholder="Your Name" />
@@ -38,6 +66,7 @@ function Auth() {
                 {/* Change to "Sign in" on login page */}
                 Sign up
               </button>
+              <div className="text-xs-center">{errors}</div>
             </form>
           </div>
         </div>
@@ -47,3 +76,6 @@ function Auth() {
 }
 
 export default Auth
+function useHistory() {
+  throw new Error('Function not implemented.')
+}

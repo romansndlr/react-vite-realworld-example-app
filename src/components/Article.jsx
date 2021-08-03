@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 
-const Article = ({ article, filters }) => {
+const Article = ({ article, filters, userLoggedIn }) => {
   const queryClient = useQueryClient()
   const queryKey = ['/articles', filters]
   const { slug, favorited } = article

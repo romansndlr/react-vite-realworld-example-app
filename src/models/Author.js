@@ -1,5 +1,5 @@
 class Author {
-  constructor(username = '', bio = '', image = '', following = false) {
+  constructor({ username = '', bio = '', image = '', following = false }) {
     this.username = username
     this.bio = bio
     this.image = image
