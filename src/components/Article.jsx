@@ -2,11 +2,13 @@ import React from 'react'
 import classNames from 'classnames'
 import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
+import { useAuth } from '../hooks'
 
-const Article = ({ article, filters, userLoggedIn }) => {
+const Article = ({ article, filters }) => {
   const queryClient = useQueryClient()
   const queryKey = ['/articles', filters]
   const { slug, favorited } = article
+  const { isAuth } = useAuth()
 
   const favorite = useMutation(() => axios[favorited ? 'delete' : 'post'](`/articles/${article.slug}/favorite`), {
     onMutate: async () => {
@@ -48,7 +50,7 @@ const Article = ({ article, filters, userLoggedIn }) => {
           <a className="author">{article.author.username}</a>
           <span className="date">{article.createdAt}</span>
         </div>
-        {userLoggedIn && (
+        {isAuth && (
           <button
             onClick={() => favorite.mutate()}
             type="button"
