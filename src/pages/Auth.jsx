@@ -84,6 +84,3 @@ function Auth() {
 }
 
 export default Auth
-function useHistory() {
-  throw new Error('Function not implemented.')
-}

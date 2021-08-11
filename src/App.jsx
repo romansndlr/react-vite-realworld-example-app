@@ -11,6 +11,8 @@ function App() {
   // Set up new routes for /login and /register
 
   const { isAuth } = useAuth()
+  const { authUser } = useAuth()
+
   return (
     <Router>
       <header>
@@ -26,23 +28,23 @@ function App() {
               {isAuth && (
                 <React.Fragment>
                   <li className="nav-item">
-                    <a className="nav-link">
+                    <NavLink to="" activeClassName="active" className="nav-link">
                       <i className="ion-compose" />
                       &nbsp;New Post
-                    </a>
+                    </NavLink>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link">
+                    <NavLink to="" activeClassName="active" className="nav-link">
                       <i className="ion-gear-a" />
                       &nbsp;Settings
-                    </a>
+                    </NavLink>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link">
+                    <NavLink to="" activeClassName="active" className="nav-link">
                       {/* Auth user avatar */}
-                      <img src="#" />
-                      {/* Auth user username */}
-                    </a>
+                      <img src={authUser.image} />
+                      {authUser.username}
+                    </NavLink>
                   </li>
                 </React.Fragment>
               )}
