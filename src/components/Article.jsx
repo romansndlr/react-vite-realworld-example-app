@@ -2,11 +2,13 @@ import React from 'react'
 import classNames from 'classnames'
 import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
+import { useAuth } from '../hooks'
 
 const Article = ({ article, filters }) => {
   const queryClient = useQueryClient()
   const queryKey = ['/articles', filters]
   const { slug, favorited } = article
+  const { isAuth } = useAuth()
 
   const favorite = useMutation(() => axios[favorited ? 'delete' : 'post'](`/articles/${article.slug}/favorite`), {
     onMutate: async () => {
@@ -16,13 +18,12 @@ const Article = ({ article, filters }) => {
 
       queryClient.setQueryData(queryKey, ({ articles, articlesCount }) => ({
         articlesCount,
-        articles: articles.map((currentArticle) => {
-          if (currentArticle.slug !== slug) return article
-
+        articles: articles.map((article) => {
+          if (slug !== article.slug) return article
           return {
             ...article,
-            favorited: !currentArticle.favorited,
-            favoritesCount: favorited ? currentArticle.favoritesCount - 1 : currentArticle.favoritesCount + 1,
+            favorited: !article.favorited,
+            favoritesCount: favorited ? article.favoritesCount - 1 : article.favoritesCount + 1,
           }
         }),
       }))
@@ -40,38 +41,42 @@ const Article = ({ article, filters }) => {
   })
 
   return (
-    <div className="article-preview" key={article?.slug}>
+    <div className="article-preview" key={article.slug}>
       <div className="article-meta">
         <a>
-          <img src={article?.author?.image} />
+          <img src={article.author?.image} />
         </a>
         <div className="info">
-          <a className="author">{article?.author?.username}</a>
-          <span className="date">{article?.createdAt}</span>
+          <a className="author">{article.author.username}</a>
+          <span className="date">{article.createdAt}</span>
         </div>
-        <button
-          onClick={() => favorite.mutate()}
-          type="button"
-          className={classNames('btn btn-sm pull-xs-right', {
-            'btn-outline-primary': !article?.favorited,
-            'btn-primary': article?.favorited,
-          })}
-          disabled={false}
-        >
-          <i className="ion-heart" />
-          &nbsp; {article?.favoritesCount}
-        </button>
+        {isAuth && (
+          <button
+            onClick={() => favorite.mutate()}
+            type="button"
+            className={classNames('btn btn-sm pull-xs-right', {
+              'btn-outline-primary': !article.favorited,
+              'btn-primary': article.favorited,
+            })}
+            disabled={false}
+          >
+            <i className="ion-heart" />
+            &nbsp; {article.favoritesCount}
+          </button>
+        )}
       </div>
       <a className="preview-link">
-        <h1>{article?.title}</h1>
-        <p>{article?.description}</p>
+        <h1>{article.title}</h1>
+        <p>{article.description}</p>
         <span>Read more...</span>
         <ul className="tag-list">
-          {article?.tagList.map((tag) => (
-            <li key={tag} className="tag-default tag-pill tag-outline">
-              {tag}
-            </li>
-          ))}
+          {article.tagList.map((tag) => {
+            return (
+              <li key={tag} className="tag-default tag-pill tag-outline">
+                {tag}
+              </li>
+            )
+          })}
         </ul>
       </a>
     </div>
