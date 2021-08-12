@@ -1,11 +1,12 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "cypress/globals": true
   },
   "parserOptions": {
     "ecmaVersion": 2020
   },
-  "extends": ["airbnb", "airbnb/hooks", "prettier"],
+  "extends": ["airbnb", "airbnb/hooks", "prettier", "plugin:cypress/recommended"],
   "rules": {
     "jsx-a11y/anchor-is-valid": 0,
     "jsx-a11y/no-static-element-interactions": 0,

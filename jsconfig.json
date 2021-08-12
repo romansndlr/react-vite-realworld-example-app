@@ -5,7 +5,8 @@
     "target": "es2020",
     "checkJs": true,
     "jsx": "react",
+    "types": ["cypress", "@testing-library/cypress"]
   },
-  "include": ["src/**/*.js", "src/**/*.jsx"],
+  "include": ["src/**/*.js", "src/**/*.jsx", "cypress/**/*.js"],
   "exclude": ["node_modules"]
 }
