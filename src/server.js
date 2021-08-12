@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { belongsTo, createServer, Factory, hasMany, Model, RestSerializer } from 'miragejs'
 import faker from 'faker'
 import { shuffle } from 'lodash-es'
@@ -50,7 +51,6 @@ function makeServer({ environment = 'development' } = {}) {
         updatedAt: () => faker.date.past(),
         favorited: false,
         favoritesCount: 0,
-        following: false,
         afterCreate(article, server) {
           const tags = server.db.tags.map(({ text }) => text)
 
@@ -70,6 +70,7 @@ function makeServer({ environment = 'development' } = {}) {
         username: () => faker.internet.userName(),
         bio: () => faker.lorem.sentence(),
         image: () => faker.image.avatar(),
+        following: false,
         afterCreate(user, server) {
           server.createList('article', 5, { author: user })
         },
@@ -91,18 +92,22 @@ function makeServer({ environment = 'development' } = {}) {
     routes() {
       this.get('/articles/feed', (schema, request) => {
         const { limit, offset } = request.queryParams
-        const user = schema.users.findBy({ email: 'test@test.com' })
+        const start = Number(offset) * Number(limit)
+        const end = start + Number(limit)
+
+        const articles = schema.articles.all()
+        const filteredArticles = articles.models.filter((article) => article.author.attrs.following)
 
         return {
-          articles: user.articles.models
-            .slice(Number(offset), Number(limit))
-            .map((article) => ({ ...article.attrs, author: article.author })),
-          articlesCount: user.articles.length,
+          articles: filteredArticles.slice(start, end).map((article) => ({ ...article.attrs, author: article.author })),
+          articlesCount: filteredArticles.length,
         }
       })
 
       this.get('/articles', (schema, request) => {
         const { limit, offset, tag, author } = request.queryParams
+        const start = Number(offset) * Number(limit)
+        const end = start + Number(limit)
 
         const allArticles = schema.articles.all()
 
@@ -122,9 +127,7 @@ function makeServer({ environment = 'development' } = {}) {
 
         return {
           articles: shuffle(
-            articles.models
-              .slice(Number(offset), Number(limit))
-              .map((article) => ({ ...article.attrs, author: article.author }))
+            articles.models.slice(start, end).map((article) => ({ ...article.attrs, author: article.author }))
           ),
           articlesCount: articles.length,
         }

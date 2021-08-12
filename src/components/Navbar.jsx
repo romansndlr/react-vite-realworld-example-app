@@ -33,8 +33,8 @@ function Navbar() {
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to={`/@${authUser?.username}`}>
-                  <img src={authUser?.image} />
-                  &nbsp;{authUser?.username}
+                  <img style={{ width: 24, height: 24, marginRight: 4, borderRadius: '50%' }} src={authUser?.image} />
+                  {authUser?.username}
                 </NavLink>
               </li>
             </>

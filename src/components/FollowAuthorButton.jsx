@@ -40,6 +40,7 @@ function FollowAuthorButton() {
     },
     onSettled: () => {
       queryClient.invalidateQueries(queryKey)
+      queryClient.invalidateQueries('/articles/feed')
     },
   })
 

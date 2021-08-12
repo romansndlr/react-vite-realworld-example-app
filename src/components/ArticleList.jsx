@@ -20,7 +20,7 @@ function ArticleList({ filters = {}, isFeed = false }) {
       ))}
       <nav>
         <ul className="pagination">
-          {Array.from({ length: data.articlesCount / limit }, (_, i) => (
+          {Array.from({ length: Math.ceil(data.articlesCount / limit) }, (_, i) => (
             <li className={offset === i ? 'page-item active' : 'page-item'} key={i}>
               <button type="button" className="page-link" onClick={() => setOffset(i)}>
                 {i + 1}
