@@ -12,7 +12,7 @@ class Article {
     favorited = false,
     favoritesCount = 0,
     author = {},
-  }) {
+  } = {}) {
     this.slug = slug
     this.title = title
     this.description = description

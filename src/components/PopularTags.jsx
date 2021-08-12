@@ -13,7 +13,15 @@ function PopularTags({ onClick }) {
       <p>Popular Tags</p>
       {isFetching && <div>Loading tags...</div>}
       {data?.tags.map((tag) => (
-        <a key={tag} onClick={() => onClick(tag)} href="#" className="tag-pill tag-default">
+        <a
+          key={tag}
+          onClick={(e) => {
+            e.preventDefault()
+            onClick(tag)
+          }}
+          href=""
+          className="tag-pill tag-default"
+        >
           {tag}
         </a>
       ))}

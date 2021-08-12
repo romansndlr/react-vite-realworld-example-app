@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-router-dom'
 import { Article, Auth, Home } from './pages'
 import { useAuth } from './hooks'
 
@@ -14,39 +14,37 @@ function App() {
       <header>
         <nav className="navbar navbar-light">
           <div className="container">
-            <a className="navbar-brand">conduit</a>
+            <Link to="/" className="navbar-brand">
+              conduit
+            </Link>
             <ul className="nav navbar-nav pull-xs-right">
               <li className="nav-item">
-                <NavLink to="/" activeClassName="active" className="nav-link">
+                <NavLink to="/" activeClassName="active" className="nav-link" end>
                   Home
                 </NavLink>
               </li>
               {isAuth && (
                 <>
                   <li className="nav-item">
-                    <NavLink to="" activeClassName="active" className="nav-link">
+                    <NavLink to="/editor" activeClassName="active" className="nav-link">
                       <i className="ion-compose" />
                       &nbsp;New Post
                     </NavLink>
                   </li>
                   <li className="nav-item">
-                    <NavLink to="" activeClassName="active" className="nav-link">
+                    <NavLink to="/settings" activeClassName="active" className="nav-link">
                       <i className="ion-gear-a" />
                       &nbsp;Settings
                     </NavLink>
                   </li>
                   <li className="nav-item">
-                    <NavLink to="" activeClassName="active" className="nav-link">
-                      {/* Auth user avatar */}
-                      <img src={authUser.image} />
+                    <NavLink to={`/@${authUser.username}`} activeClassName="active" className="nav-link">
                       {authUser.username}
+                      <img style={{ width: 24, height: 24, marginLeft: 12 }} src={authUser.image} />
                     </NavLink>
                   </li>
                 </>
               )}
-
-              {/* End logged in */}
-
               {!isAuth && (
                 <>
                   {' '}
@@ -62,8 +60,6 @@ function App() {
                   </li>
                 </>
               )}
-
-              {/* End logged out */}
             </ul>
           </div>
         </nav>
