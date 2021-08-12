@@ -5,9 +5,15 @@ import ArticlePreview from './ArticlePreview'
 
 const limit = 10
 
-function ArticleList({ filters = {}, isFeed = false }) {
+function ArticleList({ filters = { tag: null }, isFeed = false }) {
   const [offset, setOffset] = React.useState(0)
-  const { data, isFetching, isError, isSuccess } = useArticlesQuery({ isFeed, filters: { offset, ...filters } })
+  const { data, isFetching, isError, isSuccess } = useArticlesQuery({ isFeed, filters: { ...filters, offset } })
+
+  React.useEffect(() => {
+    if (filters.tag) {
+      setOffset(0)
+    }
+  }, [filters.tag])
 
   if (isFetching) return <p className="article-preview">Loading articles...</p>
   if (isError) return <p className="article-preview">Loading articles failed :(</p>

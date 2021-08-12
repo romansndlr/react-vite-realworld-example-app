@@ -81,12 +81,20 @@ function makeServer({ environment = 'development' } = {}) {
     },
 
     seeds(server) {
-      server.createList('tag', 10)
-      server.createList('user', 10)
-      server.create('user', {
-        email: 'test@test.com',
-        username: 'test-user-1',
-      })
+      const db = window.localStorage.getItem('mirage-persistance')
+
+      if (db) {
+        server.db.loadData(JSON.parse(db))
+      } else {
+        server.createList('tag', 10)
+        server.createList('user', 10)
+        server.create('user', {
+          email: 'test@test.com',
+          username: 'test-user-1',
+        })
+
+        window.localStorage.setItem('mirage-persistance', JSON.stringify(server.db.dump()))
+      }
     },
 
     routes() {
