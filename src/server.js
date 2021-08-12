@@ -2,7 +2,7 @@ import { belongsTo, createServer, Factory, hasMany, Model, RestSerializer } from
 import faker from 'faker'
 import { shuffle } from 'lodash-es'
 
-function makeServer({ environment = 'test' } = {}) {
+function makeServer({ environment = 'development' } = {}) {
   return createServer({
     environment,
 
