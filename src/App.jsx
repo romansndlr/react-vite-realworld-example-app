@@ -6,11 +6,6 @@ import { useAuth } from './hooks'
 import './App.css'
 
 function App() {
-  const [userLoggedIn, setUserLoggedIn] = React.useState(true)
-  // Set "active" class on the active link
-  // Show links according to auth status
-  // Set up new routes for /login and /register
-
   const { isAuth } = useAuth()
   const { authUser } = useAuth()
 
@@ -75,8 +70,7 @@ function App() {
       </header>
       <main>
         <Routes>
-          <Route path="/register" element={<Register setUserLoggedIn={setUserLoggedIn} />} />
-          <Route path="/" element={<Home userLoggedIn={userLoggedIn} />} />
+          <Route path="/" element={<Home />} />
           <Route path="/article/:articleId" element={<Article />} />
           <Route path="/login" element={<Auth />} />
           <Route path="/register" element={<Auth />} />
