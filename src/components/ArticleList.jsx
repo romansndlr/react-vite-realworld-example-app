@@ -8,6 +8,7 @@ const limit = 10
 function ArticleList({ filters = { tag: null }, isFeed = false }) {
   const [offset, setOffset] = React.useState(0)
   const { data, isFetching, isError, isSuccess } = useArticlesQuery({ isFeed, filters: { ...filters, offset } })
+  const pages = Math.ceil(data.articlesCount / limit)
 
   React.useEffect(() => {
     if (filters.tag) {
@@ -24,17 +25,19 @@ function ArticleList({ filters = { tag: null }, isFeed = false }) {
       {data.articles.map((article) => (
         <ArticlePreview key={article.slug} article={article} />
       ))}
-      <nav>
-        <ul className="pagination">
-          {Array.from({ length: Math.ceil(data.articlesCount / limit) }, (_, i) => (
-            <li className={offset === i ? 'page-item active' : 'page-item'} key={i}>
-              <button type="button" className="page-link" onClick={() => setOffset(i)}>
-                {i + 1}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {pages > 1 && (
+        <nav>
+          <ul className="pagination">
+            {Array.from({ length: pages }, (_, i) => (
+              <li className={offset === i ? 'page-item active' : 'page-item'} key={i}>
+                <button type="button" className="page-link" onClick={() => setOffset(i)}>
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </>
   )
 }
