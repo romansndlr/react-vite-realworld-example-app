@@ -3,29 +3,24 @@ import React from 'react'
 import { ArticleList, PopularTags } from '../components'
 import { useAuth } from '../hooks'
 
-/**
- * @type {object} Filters
- * @property {string} Filter.tag
- */
-const initialFilters = { tag: '' }
-
 function Home() {
   const { isAuth } = useAuth()
-  const [filters, setFilters] = React.useState(initialFilters)
-  const [isFeed, setIsFeed] = React.useState(false)
+  const [filters, setFilters] = React.useState({ tag: '', offset: null, feed: isAuth })
 
   React.useEffect(() => {
-    setIsFeed(isAuth)
+    setFilters({ offset: 0, feed: isAuth, tag: '' })
   }, [isAuth])
 
   function onTagClick(tag) {
-    setFilters((prevFilters) => ({ ...prevFilters, tag }))
-    setIsFeed(false)
+    setFilters({ offset: 0, feed: false, tag })
   }
 
   function onGlobalFeedClick() {
-    setFilters(initialFilters)
-    setIsFeed(false)
+    setFilters({ offset: 0, tag: '', feed: false })
+  }
+
+  function onFeedClick() {
+    setFilters({ offset: 0, tag: '', feed: true })
   }
 
   return (
@@ -44,10 +39,10 @@ function Home() {
                 {isAuth && (
                   <li className="nav-item">
                     <button
-                      onClick={() => setIsFeed(true)}
+                      onClick={onFeedClick}
                       type="button"
                       className={classNames('nav-link', {
-                        active: isFeed,
+                        active: filters.feed,
                       })}
                     >
                       Your Feed
@@ -58,7 +53,7 @@ function Home() {
                   <button
                     type="button"
                     className={classNames('nav-link', {
-                      active: !filters?.tag && !isFeed,
+                      active: !filters?.tag && !filters.feed,
                     })}
                     onClick={onGlobalFeedClick}
                   >
@@ -72,7 +67,7 @@ function Home() {
                 )}
               </ul>
             </div>
-            <ArticleList isFeed={isFeed} filters={filters} />
+            <ArticleList filters={filters} />
           </div>
           <div className="col-md-3">
             <PopularTags onTagClick={onTagClick} />

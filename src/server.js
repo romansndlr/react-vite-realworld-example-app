@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { belongsTo, createServer, Factory, hasMany, Model, RestSerializer } from 'miragejs'
 import faker from 'faker'
-import { orderBy, isNull } from 'lodash-es'
+import { orderBy, isNull, sample, sampleSize } from 'lodash-es'
 
 const authUser = {
   email: 'test@test.com',
@@ -28,11 +28,13 @@ function makeServer({ environment = 'development' } = {}) {
           if ('articles' in json) {
             const { articles } = json
             json.articles = orderBy(
-              articles.slice(start, end).map((article) => {
-                const favorites = this.schema.favorites.where({ articleId: article.id })
-                const favorited = this.schema.favorites.findBy({ articleId: article.id, userId: 11 })
-                return { ...article, favoritesCount: favorites.length, favorited: !isNull(favorited) }
-              }),
+              articles
+                .map((article) => {
+                  const favorites = this.schema.favorites.where({ articleId: article.id })
+                  const favorited = this.schema.favorites.findBy({ articleId: article.id, userId: '11' })
+                  return { ...article, favoritesCount: favorites.length, favorited: !isNull(favorited) }
+                })
+                .slice(start, end),
               (article) => new Date(article.createdAt).getTime(),
               'desc'
             )
@@ -101,13 +103,7 @@ function makeServer({ environment = 'development' } = {}) {
         image: () => faker.image.avatar(),
         following: false,
         afterCreate(user, server) {
-          server.createList('article', 2, { author: user })
-          const articles = server.createList('article', 3, { author: user })
-
-          articles.forEach((article) => {
-            const favorite = server.create('favorite', { user })
-            article.update({ favorite })
-          })
+          server.createList('article', 5, { author: user })
         },
       }),
       tag: Factory.extend({
@@ -122,8 +118,21 @@ function makeServer({ environment = 'development' } = {}) {
         server.db.loadData(JSON.parse(db))
       } else {
         server.createList('tag', 10)
-        server.createList('user', 10)
-        server.create('user', authUser)
+        const users = server.createList('user', 10)
+        const user = server.create('user', authUser)
+        sampleSize(users, 3).forEach((user) => {
+          user.update({ following: true })
+        })
+        const allUsers = [...users, user]
+
+        const articles = server.schema.articles.all()
+
+        allUsers.forEach((user) => {
+          server.createList('favorite', 3, { user }).forEach((favorite) => {
+            const article = sample(articles.filter(({ authorId }) => authorId !== user.id).models)
+            favorite.update({ article })
+          })
+        })
 
         window.localStorage.setItem('mirage-persistance', JSON.stringify(server.db.dump()))
       }
@@ -147,9 +156,8 @@ function makeServer({ environment = 'development' } = {}) {
 
         if (favorited) {
           const user = this.schema.users.findBy({ username: favorited })
-          const favorites = this.schema.favorites.where({ userId: user.id })
 
-          return schema.articles.find(favorites.models.map(({ articleId }) => articleId))
+          return schema.articles.all().filter((article) => user.favoriteIds.includes(article.favoriteId))
         }
 
         return articles

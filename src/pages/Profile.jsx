@@ -4,23 +4,16 @@ import { Link } from 'react-router-dom'
 import { ArticleList, FollowProfileButton } from '../components'
 import { useAuth, useProfileQuery } from '../hooks'
 
-/**
- * @type {object} Filters
- * @property {string} Filter.author
- * @property {string} Filter.favorited
- */
-const initialFilters = { author: '', favorited: '' }
-
 function Profile() {
   const { data } = useProfileQuery()
   const { authUser } = useAuth()
-  const [filters, setFilters] = React.useState(initialFilters)
+  const [filters, setFilters] = React.useState({ author: '', favorited: '' })
   const { username, image, bio } = data.profile
   const canUpdateProfile = authUser?.username === username
 
   const setAuthorFilter = React.useCallback(() => {
-      setFilters((prevFilters) => ({ ...prevFilters, author: username, favorited: '' }))
-  }, [username]);
+    setFilters({ author: username, favorited: '' })
+  }, [username])
 
   React.useEffect(() => {
     setAuthorFilter()
@@ -65,7 +58,7 @@ function Profile() {
                 </li>
                 <li className="nav-item">
                   <button
-                    onClick={() => setFilters((prevFilters) => ({ ...prevFilters, author: '', favorited: username }))}
+                    onClick={() => setFilters({ author: '', favorited: username })}
                     type="button"
                     className={classNames('nav-link', {
                       active: filters?.favorited,
