@@ -3,24 +3,26 @@ import React from 'react'
 import { ArticleList, PopularTags } from '../components'
 import { useAuth } from '../hooks'
 
+const initialFilters = { tag: '', offset: null, feed: false }
+
 function Home() {
   const { isAuth } = useAuth()
-  const [filters, setFilters] = React.useState({ tag: '', offset: null, feed: isAuth })
+  const [filters, setFilters] = React.useState({ ...initialFilters, feed: isAuth })
 
   React.useEffect(() => {
-    setFilters({ offset: 0, feed: isAuth, tag: '' })
+    setFilters({ ...initialFilters, feed: isAuth })
   }, [isAuth])
 
   function onTagClick(tag) {
-    setFilters({ offset: 0, feed: false, tag })
+    setFilters({ ...initialFilters, tag })
   }
 
   function onGlobalFeedClick() {
-    setFilters({ offset: 0, tag: '', feed: false })
+    setFilters(initialFilters)
   }
 
   function onFeedClick() {
-    setFilters({ offset: 0, tag: '', feed: true })
+    setFilters({ ...initialFilters, feed: true })
   }
 
   return (
