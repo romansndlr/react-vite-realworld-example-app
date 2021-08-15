@@ -19,7 +19,7 @@ function makeServer({ environment = 'development' } = {}) {
         embed: true,
         serialize(_, request) {
           const { limit, offset } = request.queryParams
-          const start = Number(offset) * Number(limit)
+          const start = Number(offset)
           const end = start + Number(limit)
 
           // eslint-disable-next-line prefer-rest-params

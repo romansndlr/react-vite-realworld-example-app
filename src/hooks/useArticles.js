@@ -7,6 +7,7 @@ function useArticles({ offset, tag, limit }) {
       articles: [],
       articlesCount: 0,
     },
+    keepPreviousData: true,
   })
 
   return {

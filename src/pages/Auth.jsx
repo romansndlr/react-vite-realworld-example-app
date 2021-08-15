@@ -21,7 +21,7 @@ function Auth() {
     }
 
     try {
-      const { data } = await axios.post(`/users${!isRegister ? '/login' : ''} `, { user: payload })
+      const { data } = await axios.post(`/users${!isRegister ? '/login' : ''}`, { user: payload })
 
       login(data.user)
 
