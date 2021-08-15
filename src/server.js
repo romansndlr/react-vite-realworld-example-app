@@ -1,16 +1,51 @@
+// @ts-nocheck
 import { belongsTo, createServer, Factory, hasMany, Model, RestSerializer } from 'miragejs'
 import faker from 'faker'
-import { shuffle } from 'lodash-es'
+import { orderBy, isNull, sample, sampleSize } from 'lodash-es'
 
-function makeServer({ environment = 'test' } = {}) {
+const authUser = {
+  email: 'test@test.com',
+  username: 'test-user-1',
+}
+
+function makeServer({ environment = 'development' } = {}) {
   return createServer({
     environment,
 
     serializers: {
       application: RestSerializer,
       article: RestSerializer.extend({
-        include: ['author', 'favorites'],
+        include: ['author', 'favorite'],
         embed: true,
+        serialize(_, request) {
+          const { limit, offset } = request.queryParams
+          const start = Number(offset) * Number(limit)
+          const end = start + Number(limit)
+
+          // eslint-disable-next-line prefer-rest-params
+          const json = RestSerializer.prototype.serialize.apply(this, arguments)
+
+          const computedArticle = (article) => {
+            const favorites = this.schema.favorites.where({ articleId: article.id })
+            const favorited = this.schema.favorites.findBy({ articleId: article.id, userId: '11' })
+            return { ...article, favoritesCount: favorites.length, favorited: !isNull(favorited) }
+          }
+
+          if ('articles' in json) {
+            const { articles } = json
+            json.articles = orderBy(
+              articles.map(computedArticle).slice(start, end),
+              (article) => new Date(article.createdAt).getTime(),
+              'desc'
+            )
+            json.articlesCount = articles.length
+          } else {
+            const { article } = json
+            json.article = computedArticle(article)
+          }
+
+          return json
+        },
       }),
       comment: RestSerializer.extend({
         include: ['author'],
@@ -21,7 +56,7 @@ function makeServer({ environment = 'test' } = {}) {
     models: {
       user: Model.extend({
         articles: hasMany(),
-        favorite: belongsTo(),
+        favorites: hasMany(),
         comments: hasMany(),
       }),
       article: Model.extend({
@@ -50,7 +85,6 @@ function makeServer({ environment = 'test' } = {}) {
         updatedAt: () => faker.date.past(),
         favorited: false,
         favoritesCount: 0,
-        following: false,
         afterCreate(article, server) {
           const tags = server.db.tags.map(({ text }) => text)
 
@@ -70,6 +104,7 @@ function makeServer({ environment = 'test' } = {}) {
         username: () => faker.internet.userName(),
         bio: () => faker.lorem.sentence(),
         image: () => faker.image.avatar(),
+        following: false,
         afterCreate(user, server) {
           server.createList('article', 5, { author: user })
         },
@@ -80,64 +115,63 @@ function makeServer({ environment = 'test' } = {}) {
     },
 
     seeds(server) {
-      server.createList('tag', 10)
-      server.createList('user', 10)
-      server.create('user', {
-        email: 'test@test.com',
-        username: 'test-user-1',
-      })
+      const db = window.localStorage.getItem('mirage-persistance')
+
+      if (db) {
+        server.db.loadData(JSON.parse(db))
+      } else {
+        server.createList('tag', 10)
+        const users = server.createList('user', 10)
+        const user = server.create('user', authUser)
+        sampleSize(users, 3).forEach((user) => {
+          user.update({ following: true })
+        })
+        const allUsers = [...users, user]
+
+        const articles = server.schema.articles.all()
+
+        allUsers.forEach((user) => {
+          server.createList('favorite', 3, { user }).forEach((favorite) => {
+            const article = sample(articles.filter(({ authorId }) => authorId !== user.id).models)
+            favorite.update({ article })
+          })
+        })
+
+        window.localStorage.setItem('mirage-persistance', JSON.stringify(server.db.dump()))
+      }
     },
 
     routes() {
-      this.get('/articles/feed', (schema, request) => {
-        const { limit, offset } = request.queryParams
-        const user = schema.users.findBy({ email: 'test@test.com' })
-
-        return {
-          articles: user.articles.models
-            .slice(Number(offset), Number(limit))
-            .map((article) => ({ ...article.attrs, author: article.author })),
-          articlesCount: user.articles.length,
-        }
-      })
+      this.get('/articles/feed', (schema) => schema.articles.all().filter((article) => article.author.following))
 
       this.get('/articles', (schema, request) => {
-        const { limit, offset, tag, author } = request.queryParams
+        const { tag, author, favorited } = request.queryParams
 
-        const allArticles = schema.articles.all()
-
-        let articles
-
-        if (!tag && !author) {
-          articles = allArticles
-        }
+        const articles = schema.articles.all()
 
         if (tag) {
-          articles = allArticles.filter(({ tagList }) => tagList.includes(tag))
+          return articles.filter(({ tagList }) => tagList.includes(tag))
         }
 
         if (author) {
-          articles = allArticles.filter(({ author: { username } }) => username === author)
+          return articles.filter((article) => article.author?.username === author)
         }
 
-        return {
-          articles: shuffle(
-            articles.models
-              .slice(Number(offset), Number(limit))
-              .map((article) => ({ ...article.attrs, author: article.author }))
-          ),
-          articlesCount: articles.length,
+        if (favorited) {
+          const user = this.schema.users.findBy({ username: favorited })
+
+          return schema.articles.all().filter((article) => user.favoriteIds.includes(article.favoriteId))
         }
+
+        return articles
       })
 
       this.post('/articles', (schema, request) => {
         const { article } = JSON.parse(request.requestBody)
 
-        const author = schema.users.findBy({ email: 'test@test.com' })
+        const author = schema.users.findBy({ email: authUser.email })
 
-        const newArticle = this.create('article', { ...article, author })
-
-        return newArticle
+        return schema.articles.create({ ...article, author })
       })
 
       this.get('/articles/:slug', (schema, request) => {
@@ -156,23 +190,20 @@ function makeServer({ environment = 'test' } = {}) {
 
       this.post('/articles/:slug/comments', (schema, request) => {
         const { slug } = request.params
+
         const body = JSON.parse(request.requestBody)
 
-        const author = schema.users.findBy({ email: 'test@test.com' })
+        const author = schema.users.findBy({ email: authUser.email })
 
         const now = new Date().getTime()
 
-        const comment = schema.comments.create({ ...body.comment, createdAt: now, updatedAt: now, author })
-
         const article = schema.articles.findBy({ slug })
 
-        article.update({ comments: [...article.comments.models, comment] })
-
-        return comment
+        return schema.comments.create({ ...body.comment, createdAt: now, updatedAt: now, author, article })
       })
 
       this.get('/tags', (schema) => ({
-        tags: schema.tags.all().models.map(({ attrs }) => attrs.text),
+        tags: schema.db.tags.map(({ text }) => text),
       }))
 
       this.post('/users/login', (schema, request) => {
@@ -190,14 +221,10 @@ function makeServer({ environment = 'test' } = {}) {
       this.put('/user', (schema, request) => {
         const { user } = JSON.parse(request.requestBody)
 
-        const instance = schema.users.findBy({ email: 'test@test.com' })
-
-        instance.update(user)
-
-        return instance
+        return schema.users.findBy({ email: authUser.email }).update(user)
       })
 
-      this.get('/user', (schema) => schema.users.findBy({ email: 'test@test.com' }))
+      this.get('/user', (schema) => schema.users.findBy({ email: authUser.email }))
 
       this.get('/profiles/:username', (schema, request) => {
         const { username } = request.params
@@ -210,9 +237,7 @@ function makeServer({ environment = 'test' } = {}) {
       this.post('/profiles/:username/follow', (schema, request) => {
         const { username } = request.params
 
-        const user = schema.users.findBy({ username })
-
-        user.update({
+        const user = schema.users.findBy({ username }).update({
           following: true,
         })
 
@@ -224,9 +249,7 @@ function makeServer({ environment = 'test' } = {}) {
       this.delete('/profiles/:username/follow', (schema, request) => {
         const { username } = request.params
 
-        const user = schema.users.findBy({ username })
-
-        user.update({
+        const user = schema.users.findBy({ username }).update({
           following: false,
         })
 
@@ -238,14 +261,8 @@ function makeServer({ environment = 'test' } = {}) {
       this.post('/articles/:slug/favorite', (schema, request) => {
         const { slug } = request.params
         const article = schema.articles.findBy({ slug })
-        const user = schema.users.findBy({ email: 'test@test.com' })
-        const favorite = schema.create('favorite', { article, user })
-
-        article.update({
-          favorite,
-          favorited: true,
-          favoritesCount: article.favoritesCount + 1,
-        })
+        const user = schema.users.findBy({ email: authUser.email })
+        schema.favorites.create({ article, user })
 
         return article
       })
@@ -253,13 +270,10 @@ function makeServer({ environment = 'test' } = {}) {
       this.delete('/articles/:slug/favorite', (schema, request) => {
         const { slug } = request.params
         const article = schema.articles.findBy({ slug })
+        const user = schema.users.findBy({ email: authUser.email })
+        const favorite = schema.favorites.findBy({ articleId: article.id, userId: user.id })
 
-        article.update({
-          favorited: false,
-          favoritesCount: article.favoritesCount - 1,
-        })
-
-        article.favorite.destroy()
+        favorite.destroy()
 
         return article
       })
