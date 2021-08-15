@@ -25,20 +25,23 @@ function makeServer({ environment = 'development' } = {}) {
           // eslint-disable-next-line prefer-rest-params
           const json = RestSerializer.prototype.serialize.apply(this, arguments)
 
+          const computedArticle = (article) => {
+            const favorites = this.schema.favorites.where({ articleId: article.id })
+            const favorited = this.schema.favorites.findBy({ articleId: article.id, userId: '11' })
+            return { ...article, favoritesCount: favorites.length, favorited: !isNull(favorited) }
+          }
+
           if ('articles' in json) {
             const { articles } = json
             json.articles = orderBy(
-              articles
-                .map((article) => {
-                  const favorites = this.schema.favorites.where({ articleId: article.id })
-                  const favorited = this.schema.favorites.findBy({ articleId: article.id, userId: '11' })
-                  return { ...article, favoritesCount: favorites.length, favorited: !isNull(favorited) }
-                })
-                .slice(start, end),
+              articles.map(computedArticle).slice(start, end),
               (article) => new Date(article.createdAt).getTime(),
               'desc'
             )
             json.articlesCount = articles.length
+          } else {
+            const { article } = json
+            json.article = computedArticle(article)
           }
 
           return json
@@ -166,11 +169,9 @@ function makeServer({ environment = 'development' } = {}) {
       this.post('/articles', (schema, request) => {
         const { article } = JSON.parse(request.requestBody)
 
-        const author = schema.users.findBy({ email: 'test@test.com' })
+        const author = schema.users.findBy({ email: authUser.email })
 
-        const newArticle = this.create('article', { ...article, author })
-
-        return newArticle
+        return schema.articles.create({ ...article, author })
       })
 
       this.get('/articles/:slug', (schema, request) => {
@@ -189,23 +190,20 @@ function makeServer({ environment = 'development' } = {}) {
 
       this.post('/articles/:slug/comments', (schema, request) => {
         const { slug } = request.params
+
         const body = JSON.parse(request.requestBody)
 
-        const author = schema.users.findBy({ email: 'test@test.com' })
+        const author = schema.users.findBy({ email: authUser.email })
 
         const now = new Date().getTime()
 
-        const comment = schema.comments.create({ ...body.comment, createdAt: now, updatedAt: now, author })
-
         const article = schema.articles.findBy({ slug })
 
-        article.update({ comments: [...article.comments.models, comment] })
-
-        return comment
+        return schema.comments.create({ ...body.comment, createdAt: now, updatedAt: now, author, article })
       })
 
       this.get('/tags', (schema) => ({
-        tags: schema.tags.all().models.map(({ attrs }) => attrs.text),
+        tags: schema.db.tags.map(({ text }) => text),
       }))
 
       this.post('/users/login', (schema, request) => {
@@ -223,14 +221,10 @@ function makeServer({ environment = 'development' } = {}) {
       this.put('/user', (schema, request) => {
         const { user } = JSON.parse(request.requestBody)
 
-        const instance = schema.users.findBy({ email: 'test@test.com' })
-
-        instance.update(user)
-
-        return instance
+        return schema.users.findBy({ email: authUser.email }).update(user)
       })
 
-      this.get('/user', (schema) => schema.users.findBy({ email: 'test@test.com' }))
+      this.get('/user', (schema) => schema.users.findBy({ email: authUser.email }))
 
       this.get('/profiles/:username', (schema, request) => {
         const { username } = request.params
@@ -243,9 +237,7 @@ function makeServer({ environment = 'development' } = {}) {
       this.post('/profiles/:username/follow', (schema, request) => {
         const { username } = request.params
 
-        const user = schema.users.findBy({ username })
-
-        user.update({
+        const user = schema.users.findBy({ username }).update({
           following: true,
         })
 
@@ -257,9 +249,7 @@ function makeServer({ environment = 'development' } = {}) {
       this.delete('/profiles/:username/follow', (schema, request) => {
         const { username } = request.params
 
-        const user = schema.users.findBy({ username })
-
-        user.update({
+        const user = schema.users.findBy({ username }).update({
           following: false,
         })
 
@@ -271,11 +261,8 @@ function makeServer({ environment = 'development' } = {}) {
       this.post('/articles/:slug/favorite', (schema, request) => {
         const { slug } = request.params
         const article = schema.articles.findBy({ slug })
-        const user = schema.users.findBy({ email: 'test@test.com' })
-        const favorite = schema.favorites.create({ article, user })
-
-        article.update({ favorite })
-        user.update({ favorite })
+        const user = schema.users.findBy({ email: authUser.email })
+        schema.favorites.create({ article, user })
 
         return article
       })
@@ -284,9 +271,9 @@ function makeServer({ environment = 'development' } = {}) {
         const { slug } = request.params
         const article = schema.articles.findBy({ slug })
         const user = schema.users.findBy({ email: authUser.email })
+        const favorite = schema.favorites.findBy({ articleId: article.id, userId: user.id })
 
-        user.favorite.destroy()
-        article.favorite.destroy()
+        favorite.destroy()
 
         return article
       })
