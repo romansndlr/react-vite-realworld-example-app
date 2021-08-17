@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { createServer } from 'miragejs'
 import axios from 'axios'
 import App from './App'
 import makeServer from './server'
@@ -10,7 +11,16 @@ if (process.env.NODE_ENV === 'production') {
   axios.defaults.baseURL = 'https://conduit.productionready.io/api'
 }
 
-if (process.env.NODE_ENV === 'development') {
+if (window.Cypress) {
+  const cyServer = createServer({
+    routes() {
+      ;['get', 'put', 'patch', 'post', 'delete'].forEach((method) => {
+        this[method]('/*', (schema, request) => window.handleFromCypress(request))
+      })
+    },
+  })
+  cyServer.logging = false
+} else {
   makeServer({ environment: 'development' })
 }
 
