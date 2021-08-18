@@ -17,7 +17,7 @@ function App() {
             <Link to="/" className="navbar-brand">
               conduit
             </Link>
-            <ul className="nav navbar-nav pull-xs-right">
+            <ul className="nav navbar-nav pull-xs-right" data-testid="navbar">
               <li className="nav-item">
                 <NavLink to="/" activeClassName="active" className="nav-link" end>
                   Home

@@ -9,7 +9,7 @@ function PopularTags({ onClick }) {
   })
 
   return (
-    <div className="sidebar">
+    <div className="sidebar" data-testid="popular-tags">
       <p>Popular Tags</p>
       {isFetching && <div>Loading tags...</div>}
       {data?.tags.map((tag) => (

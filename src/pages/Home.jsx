@@ -26,18 +26,20 @@ function Home() {
       <div className="container page">
         <div className="row">
           <div className="col-md-9">
-            <div className="feed-toggle">
+            <div className="feed-toggle" data-testid="feed-toggle">
               <ul className="nav nav-pills outline-active">
                 {/* Should be set to active by default if user is auth */}
-                <li className="nav-item">
-                  <button
-                    type="button"
-                    onClick={() => setIsFeed(true)}
-                    className={classNames('nav-link', { active: resolvedIsFeed })}
-                  >
-                    Your Feed
-                  </button>
-                </li>
+                {isAuth && (
+                  <li className="nav-item">
+                    <button
+                      type="button"
+                      onClick={() => setIsFeed(true)}
+                      className={classNames('nav-link', { active: resolvedIsFeed })}
+                    >
+                      Your Feed
+                    </button>
+                  </li>
+                )}
                 <li className="nav-item">
                   <button
                     onClick={() => {
@@ -52,7 +54,9 @@ function Home() {
                 </li>
                 {activeTag && (
                   <li className="nav-item">
-                    <a className="nav-link active"># {activeTag}</a>
+                    <button type="button" className="nav-link active">
+                      # {activeTag}
+                    </button>
                   </li>
                 )}
               </ul>
