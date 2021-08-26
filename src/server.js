@@ -105,9 +105,6 @@ function makeServer({ environment = 'development' } = {}) {
         bio: () => faker.lorem.sentence(),
         image: () => faker.image.avatar(),
         following: false,
-        afterCreate(user, server) {
-          server.createList('article', 5, { author: user })
-        },
       }),
       tag: Factory.extend({
         text: () => faker.lorem.word(),
@@ -122,6 +119,7 @@ function makeServer({ environment = 'development' } = {}) {
       } else {
         server.createList('tag', 10)
         const users = server.createList('user', 10)
+
         const user = server.create('user', authUser)
         sampleSize(users, 3).forEach((user) => {
           user.update({ following: true })
@@ -131,6 +129,7 @@ function makeServer({ environment = 'development' } = {}) {
         const articles = server.schema.articles.all()
 
         allUsers.forEach((user) => {
+          server.createList('article', 5, { author: user })
           server.createList('favorite', 3, { user }).forEach((favorite) => {
             const article = sample(articles.filter(({ authorId }) => authorId !== user.id).models)
             favorite.update({ article })

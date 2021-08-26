@@ -24,3 +24,21 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
+import faker from 'faker'
+import { Author } from '../../src/models'
+
+Cypress.Commands.add('login', (email = 'test@test.com') => {
+  cy.window().then((window) => {
+    window.localStorage.setItem(
+      'jwt',
+      JSON.stringify(
+        new Author({
+          email,
+          username: 'test-user-1',
+          bio: faker.lorem.paragraph(),
+          image: faker.image.avatar(),
+        })
+      )
+    )
+  })
+})

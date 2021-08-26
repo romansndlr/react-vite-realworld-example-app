@@ -35,17 +35,22 @@ const Article = ({ article }) => {
   })
 
   return (
-    <div className="article-preview" key={data.slug}>
-      <div className="article-meta">
+    <div className="article-preview" key={data.slug} data-testid="article-preview">
+      <div className="article-meta" data-testid="article-meta">
         <a>
           <img src={data.author?.image} />
         </a>
         <div className="info">
-          <a className="author">{data.author.username}</a>
-          <span className="date">{data.createdAt}</span>
+          <a className="author" href={`/profiles/${data.author.username}`}>
+            {data.author.username}
+          </a>
+          <span className="date" data-testid="article-date">
+            {data.createdAt}
+          </span>
         </div>
         {isAuth && (
           <button
+            aria-label="Favorite article"
             onClick={() => favorite.mutate()}
             type="button"
             className={classNames('btn btn-sm pull-xs-right', {
@@ -55,13 +60,13 @@ const Article = ({ article }) => {
             disabled={false}
           >
             <i className="ion-heart" />
-            &nbsp; {data.favoritesCount}
+            &nbsp; <span data-testid="favorites-count">{data.favoritesCount}</span>
           </button>
         )}
       </div>
       <a className="preview-link">
         <h1>{data.title}</h1>
-        <p>{data.description}</p>
+        <p>{data.body}</p>
         <span>Read more...</span>
         <ul className="tag-list">
           {data.tagList.map((tag) => (
