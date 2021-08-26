@@ -54,11 +54,8 @@ function FavoriteArticleButton({ article, children, className }) {
       <i className="ion-heart" />
       {children && <span>&nbsp; {children}</span>}
       &nbsp;
-      <span data-testid="favorites-count">
-        <ConditionalWrapper
-          condition={!!children}
-          wrapper={(children) => <span className="counter">{`(${children})`}</span>}
-        >
+      <span className="counter" data-testid="favorites-count">
+        <ConditionalWrapper condition={!!children} wrapper={(children) => `(${children})`}>
           {article.favoritesCount}
         </ConditionalWrapper>
       </span>
