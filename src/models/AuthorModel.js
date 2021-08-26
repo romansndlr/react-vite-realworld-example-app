@@ -1,4 +1,4 @@
-class Author {
+class AuthorModel {
   constructor({ email = '', username = '', bio = '', image = '', following = false }) {
     this.email = email
     this.username = username
@@ -8,4 +8,4 @@ class Author {
   }
 }
 
-export default Author
+export default AuthorModel

@@ -1,11 +1,11 @@
 import React from 'react'
 import classNames from 'classnames'
-import { Article, PopularTags } from '../components'
+import { ArticlePreview, PopularTags } from '../components'
 import { useArticles, useAuth } from '../hooks'
 
 const DEFAULT_LIMIT = 10
 
-function Home() {
+function HomePage() {
   const [offset, setOffset] = React.useState(0)
   const [activeTag, setActiveTag] = React.useState(null)
   const { isAuth } = useAuth()
@@ -62,7 +62,7 @@ function Home() {
               </ul>
             </div>
             {data.articles?.map((article) => (
-              <Article key={article.slug} article={article} />
+              <ArticlePreview key={article.slug} article={article} />
             ))}
             {isFetching && <div className="article-preview">Loading articles...</div>}
             <nav>
@@ -86,4 +86,4 @@ function Home() {
   )
 }
 
-export default Home
+export default HomePage

@@ -8,6 +8,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "classnames": "^2.3.1",
+    "dayjs": "^1.10.6",
     "formik": "^2.2.9",
     "history": "^5.0.0",
     "lodash-es": "^4.17.21",

@@ -1,6 +1,6 @@
-import Author from './Author'
+import Author from './AuthorModel'
 
-class Article {
+class ArticleModel {
   constructor({
     slug = '',
     title = '',
@@ -26,4 +26,4 @@ class Article {
   }
 }
 
-export default Article
+export default ArticleModel
