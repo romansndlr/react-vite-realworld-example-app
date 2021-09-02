@@ -10,3 +10,9 @@ beforeEach(() => {
 afterEach(() => {
   server.shutdown()
 })
+
+it('should render a list of articles', () => {})
+
+it('should filter the list of articles by tag', () => {})
+
+it('should move between pages', () => {})

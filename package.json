@@ -5,7 +5,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress open"
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "axios": "^0.21.1",
