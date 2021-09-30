@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query'
-import { Article } from '../models'
+import { ArticleModel } from '../models'
 
 function useArticle(article) {
   const { data, ...query } = useQuery(`/articles/${article.slug}`, {
@@ -9,7 +9,7 @@ function useArticle(article) {
   })
 
   return {
-    data: new Article(data.article),
+    data: new ArticleModel(data.article),
     ...query,
   }
 }

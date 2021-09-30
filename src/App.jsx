@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-router-dom'
-import { Article, Auth, Home } from './pages'
+import { ArticlePage, AuthPage, HomePage } from './pages'
 import { useAuth } from './hooks'
 
 import './App.css'
@@ -66,10 +66,10 @@ function App() {
       </header>
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/article/:articleId" element={<Article />} />
-          <Route path="/login" element={<Auth />} />
-          <Route path="/register" element={<Auth />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/article/:slug" element={<ArticlePage />} />
+          <Route path="/login" element={<AuthPage />} />
+          <Route path="/register" element={<AuthPage />} />
         </Routes>
       </main>
       <footer>

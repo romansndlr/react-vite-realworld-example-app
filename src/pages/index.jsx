@@ -1,3 +1,3 @@
-export { default as Home } from './Home'
-export { default as Article } from './Article'
-export { default as Auth } from './Auth'
+export { default as HomePage } from './HomePage'
+export { default as ArticlePage } from './ArticlePage'
+export { default as AuthPage } from './AuthPage'
