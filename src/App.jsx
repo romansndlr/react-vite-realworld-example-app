@@ -6,8 +6,7 @@ import { useAuth } from './hooks'
 import './App.css'
 
 function App() {
-  const { isAuth } = useAuth()
-  const { authUser } = useAuth()
+  const { isAuth, authUser } = useAuth()
 
   return (
     <Router>

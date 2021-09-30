@@ -1,4 +1,5 @@
 import React from 'react'
+import { uniq } from 'lodash-es'
 import { Link } from 'react-router-dom'
 import { useArticle, useAuth } from '../hooks'
 import ArticleHeadline from './ArticleHeadline'
@@ -19,7 +20,7 @@ const ArticlePreview = ({ article }) => {
         <p>{data.body}</p>
         <span>Read more...</span>
         <ul className="tag-list">
-          {data.tagList.map((tag) => (
+          {uniq(data.tagList).map((tag) => (
             <li key={tag} className="tag-default tag-pill tag-outline">
               {tag}
             </li>
