@@ -2,9 +2,42 @@ import React from 'react'
 import { useAuth } from '../hooks'
 import ArticleHeadline from './ArticleHeadline'
 import FavoriteArticleButton from './FavoriteArticleButton'
+import FollowUserButton from './FollowUserButton'
+import { useQueryClient } from 'react-query'
 
 function ArticleMeta({ article }) {
   const { authUser } = useAuth()
+
+  const queryClient = useQueryClient()
+  
+  const queryKey = ['articles', article.slug]
+
+  const mutationConfig = {
+    onMutate: async () => {
+      await queryClient.cancelQueries(queryKey)
+
+      const previousArticle = queryClient.getQueryData(queryKey)
+
+      queryClient.setQueryData(queryKey, ({ article }) => ({
+        article: {
+          ...article,
+          author: {
+            ...article.author,
+            following: !article.author.following,
+          },
+        },
+      }))
+
+      return { previousArticle }
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(queryKey, context.previousArticle)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries('articles')
+    },
+  }
+
   return (
     <div className="article-meta">
       <ArticleHeadline article={article} />
@@ -21,14 +54,7 @@ function ArticleMeta({ article }) {
           </>
         ) : (
           <>
-            <button
-              disabled={false}
-              type="button"
-              className="btn btn-sm action-btn btn-outline-secondary " // Change to btn-secondary if following
-            >
-              <i className="ion-plus-round" />
-              &nbsp; Follow {article.author?.username} {/* Change to Unfollow if following */}
-            </button>
+            <FollowUserButton user={article.author} mutationConfig={mutationConfig} />
             &nbsp;&nbsp;
             <FavoriteArticleButton article={article}>Favorite Article</FavoriteArticleButton>
           </>
