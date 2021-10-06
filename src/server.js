@@ -106,6 +106,14 @@ function makeServer({ environment = 'development' } = {}) {
         image: () => faker.image.avatar(),
         following: false,
       }),
+      author: Factory.extend({
+        email: () => faker.internet.email(),
+        token: () => faker.datatype.uuid(),
+        username: () => faker.internet.userName(),
+        bio: () => faker.lorem.sentence(),
+        image: () => faker.image.avatar(),
+        following: false,
+      }),
       tag: Factory.extend({
         text: () => faker.lorem.word(),
       }),

@@ -1,3 +1,8 @@
 button:focus {
   outline: none;
 }
+
+body {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.9);
+}

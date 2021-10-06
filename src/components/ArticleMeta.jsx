@@ -2,6 +2,7 @@ import React from 'react'
 import { useAuth } from '../hooks'
 import ArticleHeadline from './ArticleHeadline'
 import FavoriteArticleButton from './FavoriteArticleButton'
+import FollowingBtn from './FollowingBtn'
 
 function ArticleMeta({ article }) {
   const { authUser } = useAuth()
@@ -21,15 +22,7 @@ function ArticleMeta({ article }) {
           </>
         ) : (
           <>
-            <button
-              disabled={false}
-              type="button"
-              className="btn btn-sm action-btn btn-outline-secondary " // Change to btn-secondary if following
-            >
-              <i className="ion-plus-round" />
-              &nbsp; Follow {article.author?.username} {/* Change to Unfollow if following */}
-            </button>
-            &nbsp;&nbsp;
+            <FollowingBtn article={article} />
             <FavoriteArticleButton article={article}>Favorite Article</FavoriteArticleButton>
           </>
         )}

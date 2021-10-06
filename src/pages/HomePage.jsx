@@ -47,6 +47,7 @@ function HomePage() {
                       setIsFeed(false)
                     }}
                     type="button"
+                    style={{ background: 'rgba(0,0,0,0.9)' }}
                     className={classNames('nav-link', { active: !activeTag && !isFeed })}
                   >
                     Global Feed
