@@ -6,7 +6,7 @@ import FavoriteArticleButton from './FavoriteArticleButton'
 
 const ArticlePreview = ({ article }) => {
   const { isAuth } = useAuth()
-  const { data } = useArticle(article)
+  const { data } = useArticle(article.slug, article)
 
   return (
     <div className="article-preview" key={data.slug} data-testid="article-preview">

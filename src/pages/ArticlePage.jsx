@@ -1,15 +1,12 @@
 import React from 'react'
-import faker from 'faker'
 import { useParams } from 'react-router-dom'
-import { useArticle, useAuth } from '../hooks'
+import { useArticle } from '../hooks'
 import { ArticleMeta, CommentSection } from '../components'
 
 function ArticlePage() {
   const { slug } = useParams()
-  const { data: article } = useArticle({ slug })
-  const { authUser } = useAuth()
+  const { data: article } = useArticle(slug)
 
-  console.log(article)
   return (
     <div className="article-page">
       <div className="banner">
@@ -30,7 +27,7 @@ function ArticlePage() {
           <ArticleMeta article={article} />
         </div>
         <div className="row">
-          <CommentSection article={article}></CommentSection>
+          <CommentSection article={article} />
         </div>
       </div>
     </div>

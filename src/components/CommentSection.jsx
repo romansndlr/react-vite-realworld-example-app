@@ -1,10 +1,10 @@
 import React from 'react'
 import faker from 'faker'
-import { useAuth, useComments } from '../hooks'
 import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
+import { useAuth, useComments } from '../hooks'
 
-function CommentSection(article) {
+function CommentSection({ article }) {
   const authUser = useAuth()
   const comments = useComments(article)
 

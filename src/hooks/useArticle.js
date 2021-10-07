@@ -2,17 +2,17 @@ import axios from 'axios'
 import { useQuery } from 'react-query'
 import { ArticleModel } from '../models'
 
-function useArticle(article) {
+function useArticle(slug, initialArticle) {
   const { data, ...query } = useQuery(
-    [`articles`, article.slug],
+    [`articles`, slug],
     async () => {
-      const { data } = await axios.get(`/articles/${article.slug}`)
+      const { data } = await axios.get(`/articles/${slug}`)
       return data
     },
     {
-      initialData: {
-        article,
-      },
+      initialData: initialArticle ? {
+        article: initialArticle,
+      } : undefined,
       placeholderData: {
         article: {},
       },
