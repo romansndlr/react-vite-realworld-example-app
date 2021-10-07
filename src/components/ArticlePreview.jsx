@@ -19,7 +19,7 @@ const ArticlePreview = ({ article }) => {
         <p>{data.body}</p>
         <span>Read more...</span>
         <ul className="tag-list">
-          {data.tagList.map((tag) => (
+          {[...new Set(data.tagList)].map((tag) => (
             <li key={tag} className="tag-default tag-pill tag-outline">
               {tag}
             </li>
