@@ -3,12 +3,14 @@ import faker from 'faker'
 import { useParams } from 'react-router-dom'
 import { useArticle, useAuth } from '../hooks'
 import { ArticleMeta } from '../components'
+import useComments from '../hooks/useComments'
 
 function ArticlePage() {
   const { slug } = useParams()
   const { data: article } = useArticle({ slug })
   const { authUser } = useAuth()
-
+  const { data }= useComments(article.slug)
+  console.log(data)
 
   return (
     <div className='article-page'>
@@ -42,22 +44,25 @@ function ArticlePage() {
                 </button>
               </div>
             </form>
-            <div className='card'>
+            {data.comments?.map((comment)=>{
+              <div className='card'>
               <div className='card-block'>
-                <p className='card-text'>{faker.lorem.paragraph()}</p>
+                <p className='card-text'>{comment.body}</p>
               </div>
               <div className='card-footer'>
                 <a className='comment-author'>
-                  <img src={faker.image.avatar()} className='comment-author-img' />
+                  <img src={comment.author.image} className='comment-author-img' />
                 </a>
                 &nbsp;
-                <a className='comment-author'>{faker.internet.userName()}</a>
-                <span className='date-posted'>{new Date(faker.date.past()).toDateString()}</span>
+                <a className='comment-author'>{comment.author.username}</a>
+                <span className='date-posted'>{comment.createdAt}</span>
                 <span className='mod-options'>
                   <i className='ion-trash-a' />
                 </span>
               </div>
             </div>
+            })}
+            
           </div>
         </div>
       </div>
