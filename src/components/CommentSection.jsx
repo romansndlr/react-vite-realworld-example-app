@@ -44,7 +44,7 @@ function CommentSection({ article }) {
       {authUser && (
         <form className="card comment-form" onSubmit={createComment}>
           <div className="card-block">
-            <textarea required className="form-control" placeholder="Write a comment..." rows={3} />
+            <textarea name="body" required className="form-control" placeholder="Write a comment..." rows={3} />
           </div>
           <div className="card-footer">
             <img
