@@ -1,18 +1,12 @@
 import Author from './AuthorModel'
 
 class CommentModel {
-  constructor({
-    id = '',
-    createdAt = '',
-    updatedAt = '',
-    body= '',
-    author = {},
-  } = {}) {
-    this.id = id;
-    this.body = body;
-    this.createdAt = new Date(createdAt).toDateString()
-    this.updatedAt = new Date(updatedAt).toDateString()
-    this.author = new Author(author)
+  constructor(comment = {}) {
+    this.id = comment.id;
+    this.body =comment.body;
+    this.createdAt = new Date(comment.createdAt).toDateString()
+    this.updatedAt = new Date(comment.updatedAt).toDateString()
+    this.author = new Author(comment.author)
   }
 }
 

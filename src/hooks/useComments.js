@@ -4,7 +4,7 @@ import { ArticleModel } from '../models'
 import CommentModel from '../models/CommentModel'
 
 function useComments(articleSlug) {
-  const { data, ...query } = useQuery([`comments`, articleSlug],
+  const { data, ...query } = useQuery(`/comments/${articleSlug}`,
     async () => {
       const { data } = await axios.get(`/articles/${articleSlug}/comments`)
       return data
