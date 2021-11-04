@@ -201,6 +201,14 @@ function makeServer({ environment = 'development' } = {}) {
         return schema.comments.create({ ...body.comment, createdAt: now, updatedAt: now, author, article })
       })
 
+      this.delete('/articles/:slug/comments/:id', (schema, request) => {
+        const { id } = request.params
+
+        const comment = schema.comments.find(id)
+
+        comment.destroy()
+      })
+
       this.get('/tags', (schema) => ({
         tags: schema.db.tags.map(({ text }) => text),
       }))
