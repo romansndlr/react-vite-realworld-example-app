@@ -1,5 +1,4 @@
 import axios from 'axios'
-import classNames from 'classnames'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import React from 'react'
 import * as Yup from 'yup'
@@ -16,7 +15,7 @@ const UpdateUserSchema = Yup.object().shape({
 })
 
 function SettingsPage() {
-  const { authUser, setAuthUser } = useAuth()
+  const { authUser, setAuthUser, logout } = useAuth()
 
   async function handleSubmit(values) {
     const { data } = await axios.put('/user', {
@@ -44,23 +43,23 @@ function SettingsPage() {
               }}
               enableReinitialize
             >
-              {({ isSubmitting, errors }) => (
+              {({ isSubmitting }) => (
                 <Form>
                   <fieldset disabled={isSubmitting}>
-                    <fieldset className={classNames('form-group', { warning: !!errors.image })}>
+                    <fieldset className="form-group">
                       <Field name="image" className="form-control" type="text" placeholder="URL of profile picture" />
-                      <ErrorMessage className="m-t-2 text-danger" name="image" />
+                      <ErrorMessage className="m-t-2" name="image" />
                     </fieldset>
-                    <fieldset className={classNames('form-group', { warning: !!errors.username })}>
+                    <fieldset className="form-group">
                       <Field
                         className="form-control form-control-lg"
                         name="username"
                         type="text"
                         placeholder="Your Name"
                       />
-                      <ErrorMessage className="m-t-2 text-danger" name="username" />
+                      <ErrorMessage className="m-t-2" name="username" />
                     </fieldset>
-                    <fieldset className={classNames('form-group', { warning: !!errors.bio })}>
+                    <fieldset className="form-group">
                       <Field
                         as="textarea"
                         name="bio"
@@ -68,20 +67,20 @@ function SettingsPage() {
                         rows={8}
                         placeholder="Short bio about you"
                       />
-                      <ErrorMessage className="m-t-2 text-danger" name="bio" />
+                      <ErrorMessage className="m-t-2" name="bio" />
                     </fieldset>
-                    <fieldset className={classNames('form-group', { warning: !!errors.email })}>
+                    <fieldset className="form-group">
                       <Field name="email" className="form-control form-control-lg" type="text" placeholder="Email" />
-                      <ErrorMessage className="m-t-2 text-danger" name="email" />
+                      <ErrorMessage className="m-t-2" name="email" />
                     </fieldset>
-                    <fieldset className={classNames('form-group', { warning: !!errors.password })}>
+                    <fieldset className="form-group">
                       <Field
                         name="password"
                         className="form-control form-control-lg"
                         type="password"
                         placeholder="Password"
                       />
-                      <ErrorMessage className="m-t-2 text-danger" name="password" />
+                      <ErrorMessage className="m-t-2" name="password" />
                     </fieldset>
                     <button disabled={isSubmitting} type="submit" className="btn btn-lg btn-primary pull-xs-right">
                       Update Settings
@@ -91,7 +90,7 @@ function SettingsPage() {
               )}
             </Formik>
             <hr />
-            <button type="button" className="btn btn-outline-danger">
+            <button type="button" className="btn btn-outline-danger" onClick={logout}>
               Or click here to logout.
             </button>
           </div>

@@ -14,12 +14,21 @@ function login(user) {
   axios.defaults.headers.common.Authorization = `Token ${user.token}`
 }
 
+function logout() {
+  setAuthUser({})
+
+  delete axios.defaults.headers.common.Authorization
+
+  window.localStorage.removeItem(LOCAL_STORAGE_KEY)
+}
+
 function useAuth() {
   const snap = useSnapshot(auth)
 
   return {
     ...snap,
     login,
+    logout,
     setAuthUser,
   }
 }

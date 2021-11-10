@@ -4,10 +4,10 @@ import { ArticlePage, AuthPage, HomePage, SettingsPage } from './pages'
 import { useAuth } from './hooks'
 
 import './App.css'
+import { LoggedInRoute } from './components'
 
 function App() {
-  const { isAuth } = useAuth()
-  const { authUser } = useAuth()
+  const { isAuth, authUser } = useAuth()
 
   return (
     <Router>
@@ -70,7 +70,7 @@ function App() {
           <Route path="/article/:slug" element={<ArticlePage />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/register" element={<AuthPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          <LoggedInRoute path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
       <footer>
