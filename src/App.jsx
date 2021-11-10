@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-router-dom'
-import { ArticlePage, AuthPage, HomePage, SettingsPage } from './pages'
+import { ArticlePage, AuthPage, HomePage } from './pages'
 import { useAuth } from './hooks'
 
 import './App.css'
@@ -70,7 +70,6 @@ function App() {
           <Route path="/article/:slug" element={<ArticlePage />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/register" element={<AuthPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
       <footer>

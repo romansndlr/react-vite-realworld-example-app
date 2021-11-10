@@ -1,10 +1,8 @@
 import { isEmpty } from 'lodash-es'
 import { proxyWithComputed } from 'valtio/utils'
 
-export const LOCAL_STORAGE_KEY = 'jwt'
-
 function getAuthUser() {
-  const user = window.localStorage.getItem(LOCAL_STORAGE_KEY)
+  const user = window.localStorage.getItem('jwt')
 
   if (!user) return {}
 
