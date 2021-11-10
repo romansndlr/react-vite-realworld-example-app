@@ -2,9 +2,9 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-router-dom'
 import { ArticlePage, AuthPage, HomePage, SettingsPage } from './pages'
 import { useAuth } from './hooks'
+import { LoggedInRoute } from './components'
 
 import './App.css'
-import { LoggedInRoute } from './components'
 
 function App() {
   const { isAuth, authUser } = useAuth()
