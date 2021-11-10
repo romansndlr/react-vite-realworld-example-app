@@ -4,7 +4,7 @@ import { useAuth } from '../hooks'
 import axios from 'axios'
 
 function SettingsPage() {
-  const { authUser } = useAuth()
+  const { authUser, updateUser } = useAuth()
   console.log(authUser)
   return (
     <div className='settings-page'>
@@ -21,7 +21,8 @@ function SettingsPage() {
               }}
               onSubmit={async (values) => {
                 console.log(values)
-                await axios.put('/user', { user: values })
+                const res = await axios.put('/user', { user: values })
+                updateUser(res.data.user)
 
               }}
 

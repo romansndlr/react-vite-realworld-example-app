@@ -10,13 +10,23 @@ function login(user) {
   axios.defaults.headers.common.Authorization = `Token ${user.token}`
 }
 
+function updateUser(user) {
+  auth.authUser = user
+
+  window.localStorage.setItem('jwt', JSON.stringify(user))
+
+
+}
+
 function useAuth() {
   const snap = useSnapshot(auth)
 
   return {
     ...snap,
     login,
+    updateUser
   }
 }
+
 
 export default useAuth
