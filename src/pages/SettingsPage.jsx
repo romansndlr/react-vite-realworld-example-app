@@ -1,11 +1,22 @@
 import React from 'react'
+import axios from 'axios'
+import * as yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { useAuth } from '../hooks'
-import axios from 'axios'
 
 function SettingsPage() {
   const { authUser, updateUser } = useAuth()
   console.log(authUser)
+
+  const schema = yup.object().shape({
+    image: yup.string().url(),
+    username: yup.string().min(3, 'too short').required(),
+    email: yup.string().email().required(),
+    bio: yup.string(),
+    password: yup.string()
+  })
+
+
   return (
     <div className='settings-page'>
       <div className='container page'>
@@ -19,6 +30,7 @@ function SettingsPage() {
                 bio: authUser.bio,
                 email: authUser.email
               }}
+              validationSchema={schema}
               onSubmit={async (values) => {
                 console.log(values)
                 const res = await axios.put('/user', { user: values })
@@ -27,35 +39,44 @@ function SettingsPage() {
               }}
 
             >
-              <Form>
-                <fieldset>
-                  <fieldset className='form-group'>
-                    <Field className='form-control' type='text' placeholder='URL of profile picture' name='image'
-                           id='image' />
+
+              {({ errors, touched }) => (
+                <Form>
+                  <fieldset>
+                    <fieldset className='form-group'>
+                      <Field className='form-control' type='text' placeholder='URL of profile picture' name='image'
+                             id='image' />
+                    </fieldset>
+                    <fieldset className='form-group'>
+                      <Field className='form-control form-control-lg' type='text' placeholder='Your Name'
+                             name='username'
+                             id='username' />
+
+                      {errors.username && touched.username ? (
+                        <div>{errors.username}</div>
+                      ) : null}
+
+                    </fieldset>
+                    <fieldset className='form-group'>
+                      <Field
+                        as='textarea'
+                        className='form-control form-control-lg'
+                        rows={8}
+                        placeholder='Short bio about you'
+                        name='bio'
+                      ></Field>
+                    </fieldset>
+                    <fieldset className='form-group'>
+                      <Field className='form-control form-control-lg' type='text' placeholder='Email' name='email' />
+                    </fieldset>
+                    <fieldset className='form-group'>
+                      <input className='form-control form-control-lg' type='password' placeholder='Password'
+                             name='password' />
+                    </fieldset>
+                    <button className='btn btn-lg btn-primary pull-xs-right'>Update Settings</button>
                   </fieldset>
-                  <fieldset className='form-group'>
-                    <Field className='form-control form-control-lg' type='text' placeholder='Your Name' name='username'
-                           id='username' />
-                  </fieldset>
-                  <fieldset className='form-group'>
-                    <Field
-                      as='textarea'
-                      className='form-control form-control-lg'
-                      rows={8}
-                      placeholder='Short bio about you'
-                      name='bio'
-                    ></Field>
-                  </fieldset>
-                  <fieldset className='form-group'>
-                    <Field className='form-control form-control-lg' type='text' placeholder='Email' name='email' />
-                  </fieldset>
-                  <fieldset className='form-group'>
-                    <input className='form-control form-control-lg' type='password' placeholder='Password'
-                           name='password' />
-                  </fieldset>
-                  <button className='btn btn-lg btn-primary pull-xs-right'>Update Settings</button>
-                </fieldset>
-              </Form>
+                </Form>
+              )}
             </Formik>
 
           </div>
