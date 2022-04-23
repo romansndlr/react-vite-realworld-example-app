@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
   },
 })
 
-if (window.Cypress) {
+if (window.Cypress && process.env.NODE_ENV === 'test') {
   const cyServer = createServer({
     routes() {
       ;['get', 'put', 'patch', 'post', 'delete'].forEach((method) => {
@@ -34,7 +34,7 @@ if (window.Cypress) {
     },
   })
   cyServer.logging = false
-} else {
+} else if(process.env.NODE_ENV === 'development') {
   makeServer({ environment: 'development' })
 }
 
