@@ -8,7 +8,7 @@ import App from './App'
 import makeServer from './server'
 
 if (process.env.NODE_ENV === 'production') {
-  axios.defaults.baseURL = 'https://conduit.productionready.io/api'
+  axios.defaults.baseURL = 'https://api.realworld.io/api'
 }
 
 const defaultQueryFn = async ({ queryKey }) => {
