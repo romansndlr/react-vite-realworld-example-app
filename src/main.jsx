@@ -6,6 +6,7 @@ import { createServer } from 'miragejs'
 import axios from 'axios'
 import App from './App'
 import makeServer from './server'
+import AppProvider from './components/ReduxProvider'
 
 if (process.env.NODE_ENV === 'production') {
   axios.defaults.baseURL = 'https://api.realworld.io/api'
@@ -34,16 +35,19 @@ if (window.Cypress && process.env.NODE_ENV === 'test') {
     },
   })
   cyServer.logging = false
-} else if(process.env.NODE_ENV === 'development') {
+} else if (process.env.NODE_ENV === 'development') {
   makeServer({ environment: 'development' })
 }
 
+
 ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-      <ReactQueryDevtools initialIsOpen={false} containerElement="div" />
-    </QueryClientProvider>
+    <AppProvider>
+      <QueryClientProvider client={queryClient}>
+        <App />
+        <ReactQueryDevtools initialIsOpen={false} containerElement="div" />
+      </QueryClientProvider>
+    </AppProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

@@ -1,7 +1,8 @@
 // @ts-nocheck
-import { belongsTo, createServer, Factory, hasMany, Model, RestSerializer } from 'miragejs'
+import { belongsTo, createServer, Factory, hasMany, Model, RestSerializer, Response } from 'miragejs'
 import faker from 'faker'
 import { orderBy, isNull, sample, sampleSize } from 'lodash-es'
+import { generateJWTToken, isValidToken } from './util'
 
 const authUser = {
   email: 'test@test.com',
@@ -73,6 +74,7 @@ function makeServer({ environment = 'development' } = {}) {
         article: belongsTo(),
         author: belongsTo('user'),
       }),
+      token: Model,
     },
 
     factories: {
@@ -277,6 +279,33 @@ function makeServer({ environment = 'development' } = {}) {
 
         return article
       })
+
+      this.get('/generate-token', (schema, request) => {
+        const token = generateJWTToken();
+        schema.db.tokens.insert({ token });
+
+        return { token };
+      });
+     
+      this.get('/latest-article', (schema, request) => {
+        const { requestHeaders } = request;
+        const token = requestHeaders.authorization;
+        if (isValidToken(token)) {
+          const article = {
+            success: true,
+            data: {
+              body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+              title: "A simple title ",
+              published: "23rd, Oct, 2023",
+              author: "Benjamin Faleye"
+            }
+          };
+          return article ;
+        } 
+          return new Response(401, {}, { message: 'Unauthorized' });
+        
+      });
+      
     },
   })
 }
