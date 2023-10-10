@@ -4,4 +4,4 @@ dist
 dist-ssr
 *.local
 .env
-.development.env
+.env.development
