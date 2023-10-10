@@ -2,7 +2,7 @@
 import { belongsTo, createServer, Factory, hasMany, Model, RestSerializer, Response } from 'miragejs'
 import faker from 'faker'
 import { orderBy, isNull, sample, sampleSize } from 'lodash-es'
-import { generateJWTToken, isValidToken } from './util'
+import { generateJWTToken, isValidToken } from './token/tokenManager'
 
 const authUser = {
   email: 'test@test.com',

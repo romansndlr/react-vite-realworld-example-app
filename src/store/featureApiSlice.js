@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getToken, setToken } from '../util/index';
+import { getToken, setToken } from '../token/tokenStore';
 
 export const appApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -28,6 +28,7 @@ export const appApi = createApi({
     }),
     getLatestArticle: builder.query({
       query: () => 'latest-article',
+      transformResponse: ({ data })=>data,
       providesTags: ['Article']
     }),
   }),

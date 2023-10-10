@@ -6,7 +6,7 @@ import { createServer } from 'miragejs'
 import axios from 'axios'
 import App from './App'
 import makeServer from './server'
-import AppProvider from './components/ReduxProvider'
+import AppProvider from './store/AppProvider'
 
 if (process.env.NODE_ENV === 'production') {
   axios.defaults.baseURL = 'https://api.realworld.io/api'
