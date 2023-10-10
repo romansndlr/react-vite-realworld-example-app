@@ -42,11 +42,3 @@ function LatestArticleDrawer({ isOpen, toggleDrawer }) {
 }
 export default LatestArticleDrawer
 
-// 1. Remove redundant tags from Drawer component done
-// 2. limit number of chars in article body
-// 3. make generate token async. done
-// 4. move article data transformation into rtk done
-// 5. variable naming
-// 6. variable for storing expression results done
-// Anthony Amponsah12:42 AM
-// token management refactor
