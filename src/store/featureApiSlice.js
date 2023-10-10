@@ -34,4 +34,4 @@ export const appApi = createApi({
   }),
 });
 
-export const { useGenerateTokenMutation, useGetLatestArticleQuery } = appApi;
+export const { useGenerateTokenMutation, useLazyGetLatestArticleQuery } = appApi;

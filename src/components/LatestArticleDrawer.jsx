@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo } from 'react'
 import { Drawer } from 'antd'
-import { useGenerateTokenMutation, useGetLatestArticleQuery } from '../store/featureApiSlice'
+import { useGenerateTokenMutation, useLazyGetLatestArticleQuery  } from '../store/featureApiSlice'
 import { isValidToken } from '../token/tokenManager'
 import { getToken } from '../token/tokenStore'
 
 function LatestArticleDrawer({ isOpen, toggleDrawer }) {
   const [generateToken] = useGenerateTokenMutation()
-  const { data: article, refetch } = useGetLatestArticleQuery(undefined, { skip: false })
+  const [ getLatestArticle, { data : article } ] = useLazyGetLatestArticleQuery()
 
   const articleSummary = useMemo(()=>`${article?.body?.slice(0, 197)}...`,[article])
 
@@ -15,9 +15,9 @@ function LatestArticleDrawer({ isOpen, toggleDrawer }) {
       const isTokenValid = isValidToken(getToken())
       if (!isTokenValid) {
         await generateToken()
-        refetch()
+        getLatestArticle()
       } else if (!article) {
-        refetch()
+        getLatestArticle()
       }
     }
     getTokenAndLoadArticle()
