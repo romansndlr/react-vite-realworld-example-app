@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../hooks'
+import LatestArticleButton from './LatestArticleButton'
 
 function Navbar() {
   const { isAuth, authUser } = useAuth()
@@ -17,6 +18,10 @@ function Navbar() {
               Home
             </NavLink>
           </li>
+          <li className="nav-item">
+            <LatestArticleButton />
+          </li>
+
           {isAuth && (
             <>
               <li className="nav-item">

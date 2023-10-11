@@ -1,12 +1,27 @@
 {
   "compilerOptions": {
-    "lib": ["es2020", "DOM"],
-    "moduleResolution": "node",
-    "target": "es2020",
-    "checkJs": true,
-    "jsx": "react",
-    "types": ["cypress", "@testing-library/cypress"]
-  },
-  "include": ["src/**/*.js", "src/**/*.jsx", "cypress/**/*.js"],
-  "exclude": ["node_modules"]
-}
+      "allowJs": true,
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": "src",
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "isolatedModules": true,
+      "jsx": "react-jsx",
+      "lib": ["dom", "dom.iterable", "esnext"],
+      "module": "esnext",
+      "moduleResolution": "node",
+      "noEmit": true,
+      "noFallthroughCasesInSwitch": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "paths": {
+        "@/*": ["./*"]
+      },
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "target": "es6"
+    },
+    "include": ["src/**/*.js", "src/**/*.jsx", "cypress/**/*.js"],
+    "exclude": ["node_modules"]
+  }

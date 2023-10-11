@@ -1,0 +1,14 @@
+.drawer .navbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.drawer .banner {
+  margin-top: 31px;
+  background-color: #5cb85c;
+}
+
+.drawer .container {
+  display: flex;
+  justify-content: center;
+}

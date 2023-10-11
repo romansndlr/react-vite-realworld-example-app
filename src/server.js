@@ -142,6 +142,8 @@ function makeServer({ environment = 'development' } = {}) {
     },
 
     routes() {
+      this.passthrough('http://localhost:8000/*')
+
       this.get('/articles/feed', (schema) => schema.articles.all().filter((article) => article.author.following))
 
       this.get('/articles', (schema, request) => {
